@@ -1,0 +1,64 @@
+@import 'types';
+
+/**
+ * Checks if the provided value in is the given list
+ *
+ * @param list $haystack
+ *     The list to search for the $needle within
+ * @param mixed $needle
+ *     The value to search for within the list
+ *
+ * @return bool
+ *     True if the value exists in the list, false if not
+ */
+@function listContains($haystack, $needle){
+    @if(isList($haystack) == false){
+        @error '$haystack must be a list. Got: #{type-of($haystack)}';
+    }
+
+    @return (index($haystack, $needle) != null);
+}
+
+/**
+ * Checks if the provided value exists in the given map
+ *
+ * @param map $haystack
+ *     The map to search for the $needle within
+ * @param mixed $needle
+ *     The value to search for within the list
+ *
+ * @return bool
+ *     True if the value exists in the map, false if not
+ */
+@function mapContains($haystack, $needle){
+    @if(isMap($haystack) == false){
+        @error '$haystack must be a map. Got: #{type-of($haystack)}';
+    }
+
+    @return listContains(map-values($haystack), $needle);
+}
+
+/**
+ * Checks if the provided value exists in the given array (map|list) type.
+ *
+ * This function simply routes of the to haystack type specific contains handler.
+ *
+ * @param map|list $haystack
+ *     The map or list to search for the $needle within
+ * @param mixed $needle
+ *     The value to search for within the map or list
+ *
+ * @return bool
+ *     True if the value exists in the array type, false if not.
+ */
+@function arrayContains($haystack, $needle){
+    @if(isList($haystack)){
+        @return listContains($haystack, $needle);
+    }
+
+    @if(isMap($haystack)){
+        @return mapContains($haystack, $needle);
+    }
+
+    @error '$haystack must be list|map got: #{type-of($haystack)}';
+}
