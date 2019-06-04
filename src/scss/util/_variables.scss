@@ -1,0 +1,7 @@
+// Theme paths/scaffolding
+// The following variable section are used to integrate the dependent frameworks etc.
+$icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/' !default; //Bootstrap icons
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts' !default; //Fontawesome icons
+
+// Default spacer to use in the scss/theme files.
+$spacer-default: 20px !default;

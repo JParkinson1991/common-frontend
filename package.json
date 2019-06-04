@@ -1,0 +1,32 @@
+{
+    "name": "@jparkinson1991/common-frontend",
+    "version": "0.0.1",
+    "description": "Common frontend functionality",
+    "homepage": "https://github.com/JParkinson1991/common-frontend",
+    "bugs": {
+        "url": "https://github.com/JParkinson1991/common-frontend/issues"
+    },
+    "license": "MIT",
+    "author": {
+        "name": "Josh Parkinson",
+        "email": "joshparkinson1991@gmail.com",
+        "url": "https://github.com/JParkinson1991"
+    },
+    "main": "src/js/common-frontend.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/JParkinson1991/common-frontend.git"
+    },
+    "scripts": {
+        "dev:document": "sassdoc ./src/scss && open ./sassdoc/index.html",
+        "dev:lint": "sass-lint -v -q"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.8.2",
+        "bootstrap-sass": "^3.4.1"
+    },
+    "devDependencies": {
+        "sass-lint": "^1.13.1",
+        "sassdoc": "^2.7.0"
+    }
+}

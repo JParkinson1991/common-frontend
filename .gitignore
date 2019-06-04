@@ -4,6 +4,9 @@
 # - Place project specific ignore statements in this section.
 # ==============================================================================
 
+sassdoc/
+node_modules/
+
 # ==============================================================================
 # Dreamweaver Ignores
 #

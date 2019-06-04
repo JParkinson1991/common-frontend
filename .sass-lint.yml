@@ -1,0 +1,164 @@
+files:
+    include: 'src/scss/**/*.s+(a|c)ss'
+
+rules:
+    attribute-quotes:
+        - 2
+        - include: true
+    bem-depth:
+        - 1
+        - max-depth: 1
+    border-zero:
+        - 2
+        - convention: '0'
+    brace-style:
+        - 2
+        - style: '1tbs'
+          allow-single-line: false
+    class-name-format:
+        - 1
+        - allow-leading-underscore: true
+          convention: hyphenatedlowercase
+          convention-explanation: hyphenated-lower-case
+    clean-import-paths:
+        - 2
+        - leading-underscore: false
+          filename-extension: false
+    declarations-before-nesting: 2
+    empty-args:
+        - 2
+        - include: true
+    empty-line-between-blocks:
+        - 2
+        - include: true
+          allow-single-line-rulesets: false
+    extends-before-declarations: 2
+    extends-before-mixins: 2
+    final-newline: true
+    force-attribute-nesting: 0
+    force-element-nesting: 0
+    force-pseudo-nesting: 0
+    function-name-format:
+        - 2
+        - allow-leading-underscore: false
+          convention: camelcase
+          convention-explanation: camelCase
+    hex-length:
+        - 2
+        - style: long
+    hex-notation:
+        - 2
+        - style: lowercase
+    id-name-format:
+        - 1
+        - allow-leading-underscore: true
+          convention: hyphenatedlowercase
+          convention-explanation: hyphenated-lower-case
+    indentation:
+        - 2
+        - size: 4
+    leading-zero:
+        - 2
+        - include: true
+    max-file-line-count:
+        - 1
+        - length: 300
+    max-line-length:
+        - 1
+        - length: 120
+    mixin-name-format:
+        - 2
+        - allow-leading-underscore: false
+          convention: camelcase
+          convention-explanation: camelCase
+    mixins-before-declarations:
+        - 2
+        - exclude: ['breakpoint', 'mq', 'media', 'mobile', 'phone', 'tablet', 'desktop', 'widescreen']
+    nesting-depth:
+        - 1
+        - max-depth: 5
+    no-attribute-selectors: 0
+    no-color-hex: 0
+    no-color-keywords: 2
+    no-color-literals: 0
+    no-combinators: 0
+    no-css-comments: 0
+    no-debug: 2
+    no-disallowed-properties: 0
+    no-duplicate-properties: 1
+    no-empty-rulesets: 2
+    no-extends: 0
+    no-ids: 0
+    no-important: 1
+    no-invalid-hex: 2
+    no-mergeable-selectors: 2
+    no-misspelled-properties: 2
+    no-qualifying-elements:
+        - 0
+        - allow-element-with-attribute: true
+          allow-element-with-class: true
+          allow-element-with-id: true
+    no-trailing-whitespace: 2
+    no-trailing-zero: 2
+    no-transition-all: 2
+    no-universal-selectors: 1
+    no-url-domains: 2
+    no-vendor-prefixes: 0
+    no-warn: 2
+    one-declaration-per-line: 2
+    placeholder-in-extend: 2
+    placeholder-name-format:
+        - 2
+        - allow-leading-underscore: true
+          convention: hyphenatedlowercase
+          convention-explanation: hyphenated-lowercase
+    property-sort-order:
+        - 2
+        - order: smacss
+          ignore-custom-properties: false
+    property-units: 0
+    pseudo-element: 0
+    quotes:
+        - 2
+        - style: single
+    shorthand-values:
+        - 2
+        - allowed-shorthands: [1, 2, 3]
+    single-line-per-selector: 2
+    space-after-bang:
+        - 2
+        - include: false
+    space-after-colon:
+        - 2
+        - include: true
+    space-after-comma:
+        - 2
+        - include: true
+    space-around-operator:
+        - 2
+        - include: true
+    space-before-bang:
+        - 2
+        - include: true
+    space-before-brace: 0
+    space-before-colon:
+        - 2
+        - include: false
+    space-between-parens:
+        - 2
+        - include: false
+    trailing-semicolon:
+        - 2
+        - include: true
+    url-quotes: 2
+    variable-for-property: 0
+    variable-name-format:
+        - 2
+        - allow-leading-underscore: true
+          convention: ^(_?[a-z0-9]{1}[a-z0-9-]+[a-z0-9])$|^(_?[a-z0-9]+[A-Z0-9]{1}[a-z0-9]+)+$
+          convention-explanation: Either hyphenated-lower-case or camelCase with an optional single leading underscore.
+              hyphenated-lower-case should be used for public facing variables. camelCase used
+              for internal variables inside of functions/mixins etc.
+    zero-unit:
+        - 2
+        - include: false
