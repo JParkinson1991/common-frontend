@@ -1,0 +1,16 @@
+////
+/// @file _lists.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+//todo: comment
+@function first($list) {
+    @return nth($list, 1);
+}
+
+//todo: comment
+@function last($list) {
+    @return nth($list, length($list));
+}

@@ -1,0 +1,67 @@
+////
+/// @file _inline_block.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+@import '../functions/calc';
+@import '../functions/lists';
+@import '../util/variables';
+
+/// Display an array of elements as inline blocks in a single row
+///
+/// Calls to this mixin should be made from the parent container of the elements
+///
+/// Example usage:
+/// .parent {
+///    @include inlineBlockRow(('.child-one', '.child-two'), 20px, 0);
+/// }
+///
+/// @param {array} $row
+///    An array of element selectors that should be displayed in the row
+/// @param {string|int} $margin
+///    The margin to apply to right side of each element in the row
+/// @param {string|int} $lastMargin
+///    The margin to apply to the last element in the row
+///
+@mixin inlineBlockRow($row, $margin: $spacer-default, $lastItemMargin: 0){
+    @each $item in $row {
+        #{$item} {
+            display: inline-block;
+            width: calcWidth(length($row), $margin);
+            margin-right: $margin - 4px;
+            vertical-align: top;
+        }
+    }
+
+    #{last($row)}{
+        margin-right: $lastItemMargin;
+    }
+}
+
+/// Display an array of elements as multiple rows of inline blocks
+///
+/// Calls to this mixin should be made from the parent container of the elements
+///
+/// Example usage:
+/// .parent {
+///     @include inlineBlockRow((
+///         ('.child-one', '.child-two'),
+///         ('.child-three', '.child-four', '.child-five'),
+///         ('.child-six', '.child-seven')
+///     ), 20px, 0);
+/// }
+///
+/// @param {array} $rows
+///    An array of arrays, with each inner array representing a row and containing
+///    the elements that should be contained within it
+/// @param {string|int} $margin
+///    The margin to apply to right side of each element in the row
+/// @param {string|int} $lastMargin
+///    The margin to apply to the last element in the row
+@mixin inlineBlockRowMultiple($rows, $margin: $spacer-default, $lastItemMargin: 0){
+    @each $row in $rows {
+        @include inlineBlockRow($row, $margin, $lastItemMargin);
+    }
+}

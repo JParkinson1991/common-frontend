@@ -1,3 +1,16 @@
+////
+/// @file _variables.scss
+///
+/// This file contains variables represent the various glyphicons made available by the bootstrap package.
+/// At it's creation there was no means of generating a glyphicon without using it's relevant class, stylesheets
+/// themselves can not add/manipulate html attributes therefore a glyphicon mixin set was developed and these
+/// variables introduced to make the life of the implementer that bit easier.
+///
+/// @see glyphicon() [mixins/_glyphicons.scss]
+///
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
 $glyphicon-adjust: \e063;
 $glyphicon-alert: \e209;
 $glyphicon-align-center: \e053;

@@ -1,0 +1,39 @@
+////
+/// @file _calc.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Removes 0.1px from a calc declaration to avoid any max precision errors that
+/// may occur when viewing pages on internet explorer.
+///
+/// Note: Wrap calc formulas passed to this function in quotes to avoid scss
+/// doing any mathematical calculations on it prior to css declaration creation
+///
+/// @param {string} $formula
+///     The calc formula to correct
+///
+@function calcCompatible($formula){
+    @return calc((#{$formula}) - 0.1px);
+}
+
+/// Calculates the width an item should be within a row of n items where each
+/// item has the provided margin between them
+///
+/// @param {int} $itemsPerRow
+///     The number of items to be displayed in a row
+/// @param {string|int} $itemMargin
+///     The margin to be applied between each item
+///     Example: 0, 10px
+///
+@function calcWidth($itemsPerRow, $itemMargin){
+    @if($itemMargin != 0){
+        $itemMarginLineTotal: floor($itemMargin * ($itemsPerRow - 1));
+
+        @return calcCompatible('(100% - #{$itemMarginLineTotal}) / #{$itemsPerRow}');
+    }
+    @else {
+        @return calcCompatible('100% / #{$itemsPerRow}');
+    }
+}

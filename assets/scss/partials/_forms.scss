@@ -1,0 +1,23 @@
+////
+/// @file _forms.scss
+///
+/// @group style
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+label,
+.label {
+    margin-bottom: $spacer-small;
+    font-weight: $font-weight-base;
+}
+
+legend,
+.legend {
+    font-size: $font-size-base;
+}
+
+.form-control {
+    height: auto;
+    padding: $input-padding-vertical $input-padding-horizontal;
+    font-size: $font-size-base;
+}
