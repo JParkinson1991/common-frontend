@@ -8,7 +8,7 @@ build:
 
 external:
     aliases: {}
-    fonts: {}
+    fonts: []
 
 processing:
     image_min:
