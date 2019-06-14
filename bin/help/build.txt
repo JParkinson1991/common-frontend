@@ -1,0 +1,12 @@
+Usage:
+    npx common-frontend build [options]
+    npm run <script> -- build [options]
+
+Options:
+    --config, -c <file path> ........... file path to the build config file
+    --development, -dev, -d ............ enables development mode
+    --notify, -n [title] ............... enables non cli notifications,
+                                         > optional title can be provided
+    --process .......................... enables processing regardless of build context
+                                         > processing disabled for dev builds by default
+                                           this setting can be used to force it to run

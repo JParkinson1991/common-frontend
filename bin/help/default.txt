@@ -1,0 +1,13 @@
+Usage:
+    npx common-frontend <command>
+    npm run <script> -- <command>
+
+Available Commands:
+    build .............................. builds/bundles a module
+    sass-lint .......................... lints the s{a|c}ss source files
+    help ............................... shows the help screen
+    version ............................ shows the package version
+
+Options:
+    --help, -h ......................... shows the help screen for the [command]
+    --version, -v ...................... shows the package version

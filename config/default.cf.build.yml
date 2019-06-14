@@ -1,0 +1,26 @@
+build:
+    context: src
+    entry: {}
+    output:
+        path: dist
+        filename: bundle.js
+        public_path: ''
+
+external:
+    aliases: {}
+    fonts: {}
+
+processing:
+    image_min:
+        optipng:
+            optimizationLevel: 7
+        gifsicle:
+            optimizationLevel: 3
+        jpegtran:
+            progressive: true,
+            arithmetic: true
+        svgo: {}
+
+structure:
+    font_dir: fonts
+    image_dir: images

@@ -1,0 +1,8 @@
+Usage:
+    npx common-frontend sass-lint <source path> [options]
+    npm run <script> -- sass-lint <source path> [options]
+
+Options:
+    --config, -c <file path> ........... the path to config to use, if not provided a default will be used.
+    --help, -h ......................... shows the help screen for this command
+    --verbose, -v ...................... outputs a detailed report
