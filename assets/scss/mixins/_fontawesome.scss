@@ -61,7 +61,7 @@
 ///     The number of seconds the 'spin' should last
 ///
 @mixin fontAwesomeSpin($seconds: 2){
-    @if(isNumber($seconds) == false){ //todo: is int
+    @if(isNumber($seconds) == false){
         @error 'Invalid $seconds received. Expected integer value';
     }
 
@@ -78,7 +78,7 @@
 ///     How many steps in the pulse animation
 ///
 @mixin fontAwesomePulse($seconds: 1, $steps: 8){
-    @if(isNumber($seconds) == false){ //todo: is int
+    @if(isNumber($seconds) == false){ 
         @error 'Invalid $seconds received. Expected integer value';
     }
 
