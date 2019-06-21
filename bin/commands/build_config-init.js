@@ -40,7 +40,6 @@ module.exports = (args) => {
     let force = (args.force || args.f || false);
 
     //Create the config
-    //todo: catch errors
     try {
         let buildConfig = cfBuild.config.create(configDir, configName, force);
 
