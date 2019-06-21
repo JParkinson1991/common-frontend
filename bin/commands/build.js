@@ -29,6 +29,11 @@ module.exports = (args) => {
         buildConfig.setProcess(false);
     }
 
+    //Disable clean if require
+    if(args['no-clean']){
+        buildConfig.setClean(false);
+    }
+
     //Enable notify if required
     if(args.n || args.notify){
         buildConfig.setNotifications(true);
@@ -40,7 +45,7 @@ module.exports = (args) => {
         }
     }
 
-    //ensure this runs after dev checks
+    //Ensure this runs after dev checks
     //dev disables processing by default
     if(args.process){
         buildConfig.setProcess(true);
@@ -53,9 +58,27 @@ module.exports = (args) => {
     cfConsole.notice('Building from ' + buildConfig.getConfigFilePath());
     cfConsole.notice('Build mode - ' + buildMode);
 
-    //Build
-    runner.build(function(err, stats){
-        let exitCode = cfBuild.runner.cliOutput(err, stats);
-        process.exit(exitCode);
-    });
+    let watch = (args.watch || args.w || false);
+    if(watch === false){
+        runner.build(function(err, stats){
+            let exitCode = cfBuild.runner.cliOutput(err, stats);
+            process.exit(exitCode);
+        });
+    }
+    else{
+        cfConsole.notice('Enabling watch');
+
+        let watchOptions = {};
+        if(typeof args['watch-proxy'] === 'string'){
+            watchOptions.proxy = args['watch-proxy'];
+        }
+
+        if(typeof args['watch-proxy-delay'] === 'number' && args['watch-proxy-delay'] > 0){
+            watchOptions.reloadDelay = args['watch-proxy-delay'];
+        }
+
+        runner.watch(watchOptions,function(err, stats){
+            cfBuild.runner.cliOutput(err, stats);
+        });
+    }
 };

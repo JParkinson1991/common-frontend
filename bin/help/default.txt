@@ -4,6 +4,7 @@ Usage:
 
 Available Commands:
     build .............................. builds/bundles a module
+    build:config-init .................. initialise a build config file
     sass-lint .......................... lints the s{a|c}ss source files
     help ............................... shows the help screen
     version ............................ shows the package version

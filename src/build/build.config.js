@@ -12,6 +12,8 @@ const WebpackNotifierPlugin = require('webpack-notifier');
 
 const _boolOr = Symbol('boolOr');
 
+const _defaultConfigFile = path.resolve(__dirname, '../../config/default.cf.build.yml');
+
 /**
  * BuildConfig Class
  *
@@ -26,12 +28,13 @@ class BuildConfig {
      * @param {string} configFilePath
      *     The build config file path
      */
-    constructor(configFilePath ){
+    constructor(configFilePath){
         if(fs.existsSync(configFilePath) === false){
             throw new Error('Config file not found at ' + configFilePath);
         }
 
         this.buildName = path.basename(path.dirname(configFilePath));
+        this.clean = true;
         this.config = cfUtility.yaml.loadFile(configFilePath);
         this.configFilePath = configFilePath;
         this.notifications = false;
@@ -61,6 +64,17 @@ class BuildConfig {
      */
     setBuildName(buildName){
         this.buildName = buildName;
+    }
+
+    /**
+     * Sets the clean build directory enabled state
+     *
+     * @param {boolean} trueFalse
+     *     True to clean build directory before build
+     *     False to built on top of current files
+     */
+    setClean(trueFalse){
+        this.clean = this[_boolOr](trueFalse, true);
     }
 
     /**
@@ -153,11 +167,10 @@ class BuildConfig {
                 alias: this.config.external.aliases
             },
             plugins: [
-                new CleanWebpackPlugin(),
                 new FixStyleOnlyEntriesPlugin(),
                 new MiniCssExtractPlugin({
                     filename: '[name].css'
-                }),
+                })
             ],
             devtool: (this.sourceMaps === true) ? 'source-map' : false,
             module: {
@@ -213,6 +226,11 @@ class BuildConfig {
             }
         };
 
+        //Add clean if require
+        if(this.clean){
+            webpackConfig.plugins.push(new CleanWebpackPlugin());
+        }
+
         //Add module/assets processing for production builds
         if(this.process){
             //Check for image min configuration, add plugin if it exists
@@ -247,9 +265,7 @@ class BuildConfig {
             }
 
             //Attach the notifier
-            webpackConfig.plugins.push(new WebpackNotifierPlugin({
-                title: this.buildName
-            }))
+            webpackConfig.plugins.push(new WebpackNotifierPlugin(notifierConfig))
         }
 
         return webpackConfig;
@@ -294,6 +310,49 @@ class BuildConfig {
         }
 
         return new this(results[0]);
+    }
+
+    /**
+     * Creates a build configuration file and object in the given directory
+     *
+     * @param {string} inDir
+     *     The absolute path to the directory in which to create the build config file
+     * @param {string} name
+     *     The name of the build config file (will be prepended to .cf.build.yml)
+     *     If not provided, the directory name will be used
+     * @param {boolean} force
+     *     If true, a build configuration file will:
+     *     - be created, even if one already exists in the given directory
+     *     - overwrite any build config file with the same name
+     *
+     * @return {BuildConfig}
+     */
+    static create(inDir, name = null, force = false){
+        //Ensure config file exists
+        if(fs.existsSync(inDir) === false){
+            throw new Error('Cant create build config. ' + inDir + ' does not exist');
+        }
+
+        //Ensure directory path is for a directory
+        if(fs.lstatSync(inDir).isDirectory() === false){
+            throw new Error('Cant create build config. ' + inDir + ' is not a directory');
+        }
+
+        //Not forcing, so ensure config file does not already exit
+        if(force === false){
+            if(glob.sync(inDir + '/*.cf.build.yml').length > 0){
+                throw new Error('Cant create build config. Configuration files already exist in ' + inDir);
+            }
+        }
+
+        let newConfigFile = (name === null)
+            ? inDir + '/' + path.basename(inDir) + '.cf.build.yml'
+            : inDir + '/' + name + '.cf.build.yml';
+
+        //Checks passed, copy the default into it's final file
+        fs.copyFileSync(_defaultConfigFile, newConfigFile);
+
+        return new this(newConfigFile);
     }
 }
 

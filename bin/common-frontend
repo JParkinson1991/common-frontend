@@ -29,8 +29,10 @@ if(args.help || args.h){
     command = 'help';
 }
 
+//Clean the command variable
 //Attempt to load the command file
 //If found load it passing over and arguments provided
+command = command.replace(/[^0-9a-z-]/gi, '_');
 const commandFile = path.resolve(__dirname, 'commands', command + '.js');
 if(fs.existsSync(commandFile)){
     require(commandFile)(args);

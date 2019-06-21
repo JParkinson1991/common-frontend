@@ -1,3 +1,6 @@
+const _assign = require('lodash.assign');
+const browserSync = require('browser-sync');
+const chokidar = require('chokidar');
 const webpack = require('webpack');
 
 const _createCompiler = Symbol('createCompiler');
@@ -53,6 +56,58 @@ class BuildRunner {
                 callback(err, stats);
             }
         });
+    }
+
+    /**
+     * Runs webpack in watch mode for the buildConfigs loaded
+     *
+     * @param {object} options
+     *     The webpack watch options
+     *     If this object contains a 'proxy' setting a browser sync instance will be created
+     * @param {function} callback
+     *     A callback to trigger after webpack watch has finished
+     */
+    watch(options = {}, callback = null){
+        let compiler = this[_createCompiler]();
+
+        options = _assign({
+            ignored: /node_modules/,
+            aggregateTimeout: 300
+        }, options);
+
+        compiler.watch({ ignored: /node_modules/, aggregateTimeout: 300}, (err, stats) => {
+            if(typeof callback === 'function'){
+                callback(err, stats);
+            }
+        });
+
+        if(options.hasOwnProperty('proxy')){
+            var bs = browserSync.create();
+            bs.init({
+                proxy: options.proxy,
+                reloadDelay: (options.hasOwnProperty('reloadDelay')) ? options.reloadDelay * 1000 : 0
+            });
+
+            var watchDirs = [];
+            compiler.compilers.forEach(function(compilerConfig){
+                watchDirs.push(compilerConfig.outputPath + '/**/*.css');
+            });
+
+            let cssWatcher = chokidar.watch(watchDirs, {
+                ignored: /node_modules/,
+                ignoreInitial: true,
+            });
+
+            cssWatcher.on('add', (path) => {
+                    bs.reload(path);
+            });
+            cssWatcher.on('change', (path) => {
+                    bs.reload(path);
+            });
+            cssWatcher.on('unlink', () => {
+                    bs.reload();
+            });
+        }
     }
 
     /**
