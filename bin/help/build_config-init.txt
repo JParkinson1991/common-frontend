@@ -1,0 +1,12 @@
+Usage:
+    npx common-frontend build:config-init [options]
+    npm run <script> -- build:config-init [options]
+
+Options:
+    --dir, -d <path> ................... the directory to save the config file in
+    --force, -f ........................ forces creation of the config file
+                                         > file created even if another exists in the same directory
+                                           file overwritten if it already exists
+    --name, -n <name> .................. the name of the config file
+                                         > prepended to .cf.build.yml
+                                           if 3not provided defaults to the directory name
