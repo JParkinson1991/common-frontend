@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+const cfConsole = require('../src/console');
+const fs = require('fs');
+const minimist = require('minimist');
+const path = require('path');
+
+//Parse any arguments grab the command
+const args = minimist(process.argv.slice(2));
+let command = args._[0];
+
+//If no command was passed
+//Show the package version if the -v|--version options passed
+//Or default to help command
+if(typeof(args._[0]) === 'undefined'){
+    if(args.version || args.v){
+        command = 'version';
+    }
+    else{
+        command = 'help';
+    }
+}
+
+//Set the command for help if -h or --help
+//This done so that the help flag can be set for commands aswell as the full package
+//The following commands can be used to get help
+// . common-frontend help [command]
+// . common-frontend [command] -h|--help
+if(args.help || args.h){
+    command = 'help';
+}
+
+//Clean the command variable
+//Attempt to load the command file
+//If found load it passing over and arguments provided
+command = command.replace(/[^0-9a-z-]/gi, '_');
+const commandFile = path.resolve(__dirname, 'commands', command + '.js');
+if(fs.existsSync(commandFile)){
+    require(commandFile)(args);
+    //Commands must exit themselves,
+    //If exited here premature exit of asynchronous functions may occur
+    //For example, webpack builds
+}
+else{
+    cfConsole.error('Unknown command \'' + command + '\'');
+    process.exit(1);
+}

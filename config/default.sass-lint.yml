@@ -1,6 +1,3 @@
-files:
-    include: 'src/scss/**/*.s+(a|c)ss'
-
 rules:
     attribute-quotes:
         - 2
@@ -13,7 +10,7 @@ rules:
         - convention: '0'
     brace-style:
         - 2
-        - style: '1tbs'
+        - style: 'stroustrup'
           allow-single-line: false
     class-name-format:
         - 1
@@ -112,10 +109,7 @@ rules:
         - allow-leading-underscore: true
           convention: hyphenatedlowercase
           convention-explanation: hyphenated-lowercase
-    property-sort-order:
-        - 2
-        - order: smacss
-          ignore-custom-properties: false
+    property-sort-order: 0
     property-units: 0
     pseudo-element: 0
     quotes:

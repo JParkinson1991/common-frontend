@@ -1,0 +1,128 @@
+////
+/// @file _types.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Checks if the value is of a given type
+///
+/// @param {mixed} $value
+///     The value to check the type of
+/// @param {string} $type
+///     The type to check for
+///
+/// @return {bool}
+///     True if $value is of $type, false if not.
+///
+@function isType($value, $type){
+    @return type-of($value) == $type;
+}
+
+/// Checks if the value is a string
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a number, false if not.
+///
+@function  isNumber($value){
+    @return isType($value, 'number');
+}
+
+/// Checks if the value is a string
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a string, false if not.
+///
+@function isString($value){
+    @return isType($value, 'string');
+}
+
+/// Checks if the value is a color
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a color, false if not.
+///
+@function isColor($value){
+    @return isType($value, 'color');
+}
+
+/// Checks if the value is a list
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a list, false if not.
+///
+@function isList($value){
+    @return isType($value, 'list');
+}
+
+/// Checks if the value is a map
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a map, false if not.
+///
+@function isMap($value){
+    @return isType($value, 'map');
+}
+
+/// Checks if the value is a boolean
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a boolean, false if not.
+///
+@function isBool($value){
+    @return isType($value, 'bool');
+}
+
+/// Checks if the value is null
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a null, false if not.
+///
+@function isNull($value){
+    @return isType($value, 'null');
+}
+
+/// Checks if the value is a color
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a color, false if not.
+///
+@function isFunction($value){
+    @return isType($value, 'function');
+}
+
+/// Checks if the value is an argument lsit
+///
+/// @param {mixed} $value
+///     The value to check the type of
+///
+/// @return {bool}
+///     True if $value is a argument list, false if not.
+///
+@function isArgList($value){
+    @return isType($value, 'arglist');
+}

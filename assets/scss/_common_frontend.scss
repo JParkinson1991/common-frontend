@@ -1,3 +1,12 @@
+////
+/// @file _variables.scss
+///
+/// Main package entry point, including this file will load the package in it's full functioning entirety
+/// Package may be loaded by 'module' or section, however all dependent will need to be loaded as required.
+///
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
 // Theme variables
 @import 'util/variables';
 @import 'util/glyphicons';
@@ -13,10 +22,20 @@
 
 // Functions
 @import 'functions/contains';
+@import 'functions/negative';
 @import 'functions/types';
 
 // Mixins
+@import 'mixins/buttons';
 @import 'mixins/clearfix';
+@import 'mixins/count';
 @import 'mixins/float';
 @import 'mixins/fontawesome';
 @import 'mixins/glyphicons';
+@import 'mixins/grid';
+@import 'mixins/media_queries';
+
+// Partials
+@import 'partials/forms';
+@import 'partials/html';
+@import 'partials/type';
