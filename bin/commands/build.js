@@ -21,12 +21,18 @@ module.exports = (args) => {
     //Build mode instantiated successfully at this point
     //Configure from context
     var buildMode = 'Production';
+    buildConfig.setSassOutputStyle('compressed'); //Set a sensible default that doesnt break sourcemaps etc
     if(args.d || args.dev || args.development){
         buildMode = 'Development';
 
         buildConfig.setProduction(false);
         buildConfig.setSourceMaps(true);
         buildConfig.setProcess(false);
+    }
+
+    //Override output style if required
+    if(args['sass-output-style'] && typeof args['sass-output-style'] === 'string'){
+        buildConfig.setSassOutputStyle(args['sass-output-style']);
     }
 
     //Disable clean if require

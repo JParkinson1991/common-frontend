@@ -38,6 +38,7 @@ class BuildConfig {
         this.config = cfUtility.yaml.loadFile(configFilePath);
         this.configFilePath = configFilePath;
         this.notifications = false;
+        this.sassOutputStyle = 'nested'; //use node-sass default
         this.process = true;
         this.production = true;
         this.resolveRoot = path.dirname(configFilePath);
@@ -125,6 +126,16 @@ class BuildConfig {
     }
 
     /**
+     * Sets the output style to use during sass compilation
+     *
+     * @param sassOutputStyle
+     *     The output style to sue
+     */
+    setSassOutputStyle(sassOutputStyle){
+        this.sassOutputStyle = sassOutputStyle;
+    }
+
+    /**
      * Sets the source paths enabled flag
      *
      * @param {boolean} trueFalse
@@ -189,6 +200,7 @@ class BuildConfig {
                                 loader: 'sass-loader',
                                 options: {
                                     importer: globImporter(),
+                                    outputStyle: this.sassOutputStyle,
                                     sourceMap: this.sourceMaps
                                 }
                             }

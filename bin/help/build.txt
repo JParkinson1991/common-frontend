@@ -11,6 +11,7 @@ Options:
     --process .......................... enables processing regardless of build context
                                          > processing disabled for dev builds by default
                                            this setting can be used to force it to run
+    --sass-output-style <style> ........ override the sensible output style defaults
     --watch, -w  ....................... enables watching for changes and auto rebuilds
                                          > if a proxy url is provided a browser sync
                                            instance will be started
