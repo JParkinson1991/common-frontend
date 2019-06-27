@@ -74,6 +74,13 @@ module.exports = (args) => {
     else{
         cfConsole.notice('Enabling watch');
 
+        //Disable clean, if argument wasn't passed inform caller
+        //Cleaning during watch, will result in unchanged assets being deleted and not rebuilt.
+        buildConfig.setClean(false);
+        if(typeof args['no-clean'] === 'undefined'){
+            cfConsole.notice('Build output cleaning disabled');
+        }
+
         let watchOptions = {};
         if(typeof args['watch-proxy'] === 'string'){
             watchOptions.proxy = args['watch-proxy'];
