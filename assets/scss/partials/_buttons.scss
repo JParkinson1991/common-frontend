@@ -1,0 +1,22 @@
+////
+/// @file _buttons.scss
+///
+/// @group bootstrap
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+.btn {
+    padding: $btn-padding-vertical $btn-padding-horizontal;
+}
+
+.btn-xs {
+    padding: $btn-xs-padding-vertical $btn-xs-padding-horizontal;
+}
+
+.btn-sm {
+    padding: $btn-sm-padding-vertical $btn-sm-padding-horizontal;
+}
+
+.btn-lg {
+    padding: $btn-lg-padding-vertical $btn-lg-padding-horizontal;
+}

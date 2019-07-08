@@ -33,9 +33,11 @@
 @import 'mixins/fontawesome';
 @import 'mixins/glyphicons';
 @import 'mixins/grid';
+@import 'mixins/inline_block';
 @import 'mixins/media_queries';
 
 // Partials
+@import 'partials/buttons';
 @import 'partials/forms';
 @import 'partials/html';
 @import 'partials/type';

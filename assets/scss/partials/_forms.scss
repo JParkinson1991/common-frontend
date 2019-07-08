@@ -7,8 +7,16 @@
 
 label,
 .label {
-    margin-bottom: $spacer-small;
+    display: block;
+    padding: 0;
+    font-size: $font-size-base;
     font-weight: $font-weight-base;
+    line-height: $line-height-computed;
+    color: $text-color;
+    text-align: left;
+    margin-bottom: $spacer-xs;
+    border: 0;
+    border-radius: 0;
 }
 
 legend,
