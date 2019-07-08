@@ -215,7 +215,12 @@ class BuildConfig {
                                 options: {
                                     name: (this.production)
                                         ? imageDir + '/[hash].[ext]'
-                                        : imageDir + '/[path][name].[ext]'
+                                        : imageDir + '/[path][name].[ext]',
+                                    outputPath: (url, resourcePath, context) => {
+                                        //Remove node_modules from output paths as contents often
+                                        //ignored in recursive file searches etc.
+                                        return url.replace('/node_modules/', '/');
+                                    }
                                 }
                             }
                         ]
@@ -229,7 +234,12 @@ class BuildConfig {
                                 options: {
                                     name: (this.production)
                                         ? fontDir + '/[hash].[ext]'
-                                        : fontDir + '/[path][name].[ext]'
+                                        : fontDir + '/[path][name].[ext]',
+                                    outputPath: (url, resourcePath, context) => {
+                                        //Remove node_modules from output paths as contents often
+                                        //ignored in recursive file searches etc.
+                                        return url.replace('/node_modules/', '/');
+                                    }
                                 }
                             }
                         ]
