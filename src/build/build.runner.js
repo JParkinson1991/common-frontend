@@ -1,4 +1,4 @@
-const _assign = require('lodash.assign');
+const _assign = require('lodash/assign');
 const browserSync = require('browser-sync');
 const chokidar = require('chokidar');
 const webpack = require('webpack');
