@@ -199,8 +199,10 @@ class BuildConfig {
                             {
                                 loader: 'sass-loader',
                                 options: {
-                                    importer: globImporter(),
-                                    outputStyle: this.sassOutputStyle,
+                                    sassOptions: {
+                                        importer: globImporter(),
+                                        outputStyle: this.sassOutputStyle
+                                    },
                                     sourceMap: this.sourceMaps
                                 }
                             }
