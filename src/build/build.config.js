@@ -5,7 +5,7 @@ const fs = require('fs');
 const glob = require('glob');
 const globImporter = require('node-sass-glob-importer');
 const ImageMinPlugin = require('imagemin-webpack-plugin').default;
-const _get = require('lodash.get');
+const _get = require('lodash/get');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const WebpackNotifierPlugin = require('webpack-notifier');
@@ -165,6 +165,14 @@ class BuildConfig {
             fontDirPatterns.push(cfUtility.path.toRegex(externalFonts[i]));
         }
 
+        //Determine module resolution folders, this module may exist in a state where it's dependencies
+        //exist in the top level project node_modules directory or nested within it's own package directory
+        //If it's the latter than the nested directory must be searched when resolving modules.
+        let localNodeModuleDir = path.resolve(__dirname, '../..') + '/node_modules';
+        let resolveModules = (fs.existsSync(localNodeModuleDir))
+            ? [localNodeModuleDir, 'node_modules']
+            : ['node_modules'];
+
         let webpackConfig = {
             mode: (this.production === true) ? 'production' : 'development',
             context: cfUtility.path.absoluteOrResolvedFrom(this.config.build.context, this.resolveRoot),
@@ -175,7 +183,11 @@ class BuildConfig {
                 publicPath: this.config.build.output.public_path
             },
             resolve: {
-                alias: this.config.external.aliases
+                alias: this.config.external.aliases,
+                modules: resolveModules
+            },
+            resolveLoader: {
+                modules: resolveModules
             },
             plugins: [
                 new FixStyleOnlyEntriesPlugin(),
@@ -199,8 +211,10 @@ class BuildConfig {
                             {
                                 loader: 'sass-loader',
                                 options: {
-                                    importer: globImporter(),
-                                    outputStyle: this.sassOutputStyle,
+                                    sassOptions: {
+                                        importer: globImporter(),
+                                        outputStyle: this.sassOutputStyle
+                                    },
                                     sourceMap: this.sourceMaps
                                 }
                             }
