@@ -8,5 +8,5 @@ Options:
                                          > file created even if another exists in the same directory
                                            file overwritten if it already exists
     --name, -n <name> .................. the name of the config file
-                                         > prepended to .cf.build.yml
-                                           if 3not provided defaults to the directory name
+                                         > prepended to .cf.config.yml
+                                           if not provided defaults to the directory name

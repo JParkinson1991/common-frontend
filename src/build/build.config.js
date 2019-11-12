@@ -12,7 +12,8 @@ const WebpackNotifierPlugin = require('webpack-notifier');
 
 const _boolOr = Symbol('boolOr');
 
-const _defaultConfigFile = path.resolve(__dirname, '../../config/default.cf.build.yml');
+const _configFileSuffix = '.cf.config.yml';
+const _defaultConfigFile = path.resolve(__dirname, '../../config/default' + _configFileSuffix);
 
 /**
  * BuildConfig Class
@@ -323,8 +324,7 @@ class BuildConfig {
      * configuration file within the given directory.
      *
      * For a BuildConfig instance to be discovered there must be a
-     * configuration file with the following suffix:
-     * >> .cf.build.yml
+     * configuration file with the $_configFileSuffix
      *
      * @param {string} inDir
      *     The directory in which to find the config file
@@ -337,8 +337,8 @@ class BuildConfig {
         inDir = cfUtility.string.trimRight(inDir, '/');
 
         let globPattern = (recursive)
-            ? inDir + '/**/*.cf.build.yml'
-            : inDir + '/*.cf.build.yml';
+            ? inDir + '/**/*' + _configFileSuffix
+            : inDir + '/*' + _configFileSuffix;
 
         let results = glob.sync(globPattern);
         if(results.length === 0){
@@ -354,7 +354,7 @@ class BuildConfig {
      * @param {string} inDir
      *     The absolute path to the directory in which to create the build config file
      * @param {string} name
-     *     The name of the build config file (will be prepended to .cf.build.yml)
+     *     The name of the build config file (will be prepended to $_configFileSuffix)
      *     If not provided, the directory name will be used
      * @param {boolean} force
      *     If true, a build configuration file will:
@@ -376,14 +376,14 @@ class BuildConfig {
 
         //Not forcing, so ensure config file does not already exit
         if(force === false){
-            if(glob.sync(inDir + '/*.cf.build.yml').length > 0){
+            if(glob.sync(inDir + '/*' + _configFileSuffix).length > 0){
                 throw new Error('Cant create build config. Configuration files already exist in ' + inDir);
             }
         }
 
         let newConfigFile = (name === null)
-            ? inDir + '/' + path.basename(inDir) + '.cf.build.yml'
-            : inDir + '/' + name + '.cf.build.yml';
+            ? inDir + '/' + path.basename(inDir) + _configFileSuffix
+            : inDir + '/' + name + _configFileSuffix;
 
         //Checks passed, copy the default into it's final file
         fs.copyFileSync(_defaultConfigFile, newConfigFile);
@@ -391,6 +391,5 @@ class BuildConfig {
         return new this(newConfigFile);
     }
 }
-
 
 module.exports = BuildConfig;

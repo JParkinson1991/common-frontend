@@ -1,4 +1,4 @@
-# Default .cf.build.yml file
+# Default .cf.config.yml file
 #
 # This file provides an entry point into the build tooling provided by
 # common-frontend. The build tool itself is essentially a wrapper
