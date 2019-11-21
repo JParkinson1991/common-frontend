@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "lib": [
+            "dom",
+            "es6"
+        ],
+        "types": [
+            "reflect-metadata"
+        ],
+        "module": "CommonJs",
+        "declaration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "noEmitOnError": true,
+        "outDir": "./lib",
+        "removeComments": true,
+        "strict": true
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "package.json",
+        "node_modules"
+    ]
+}
