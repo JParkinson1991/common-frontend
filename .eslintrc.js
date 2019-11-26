@@ -27,6 +27,15 @@ module.exports = {
         "max-len": ["error", {
             "code": 120
         }],
+        "object-property-newline": ["error", {
+            "allowAllPropertiesOnSameLine": false
+        }],
+        "padded-blocks": ["error", {
+            "blocks": "never",
+            "classes": "always",
+            "switches": "never"
+        }],
+
 
         //Typescript overrides
         "no-unused-vars": "off",

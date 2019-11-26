@@ -4,8 +4,10 @@
 # - Place project specific ignore statements in this section.
 # ==============================================================================
 
-documentation/
+/lib
 node_modules/
+_new
+_old
 
 # ==============================================================================
 # Dreamweaver Ignores
