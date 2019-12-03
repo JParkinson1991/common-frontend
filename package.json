@@ -31,22 +31,36 @@
         "url": "https://github.com/JParkinson1991/common-frontend.git"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.11.2",
+        "@types/app-root-path": "^1.2.4",
+        "@types/webpack-dev-server": "^3.9.0",
+        "app-root-path": "^3.0.0",
+        "bootstrap-sass": "^3.4.1",
         "chalk": "^3.0.0",
+        "clean-webpack-plugin": "^3.0.0",
         "commander": "^4.0.1",
         "css-loader": "^3.2.0",
+        "file-loader": "^5.0.2",
+        "glob": "^7.1.6",
         "inquirer": "^7.0.0",
         "inversify": "^5.0.1",
         "js-yaml": "^3.13.1",
-        "minimist": "^1.2.0",
+        "mini-css-extract-plugin": "^0.8.0",
         "node-sass": "^4.13.0",
         "reflect-metadata": "^0.1.13",
         "sass-loader": "^8.0.0",
         "style-loader": "^1.0.0",
-        "webpack-dev-server": "^3.9.0"
+        "webpack": "^4.41.2",
+        "webpack-dev-server": "^3.9.0",
+        "webpack-fix-style-only-entries": "^0.4.0",
+        "webpack-notifier": "^1.8.0"
     },
     "devDependencies": {
         "@types/inquirer": "^6.5.0",
-        "@types/node": "^12.12.9",
+        "@types/js-yaml": "^3.12.1",
+        "@types/mini-css-extract-plugin": "^0.8.0",
+        "@types/node": "^12.12.14",
+        "@types/webpack-notifier": "^1.5.3",
         "@typescript-eslint/eslint-plugin": "^2.8.0",
         "@typescript-eslint/parser": "^2.8.0",
         "eslint": "^6.1.0",
@@ -56,8 +70,7 @@
         "shebang-loader": "0.0.1",
         "ts-loader": "^6.2.1",
         "typescript": "^3.7.2",
-        "webpack": "^4.41.2",
         "webpack-cli": "^3.3.10",
-        "webpack-notifier": "^1.8.0"
+        "webpack-node-externals": "^1.7.2"
     }
 }

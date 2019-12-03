@@ -15,18 +15,22 @@ module.exports = {
         "import/resolver": {
             "node": {
                 "extensions": [
-                    ".ts"
+                    ".ts",
                 ]
             }
         }
     },
     rules: {
+        "brace-style": ["error", "stroustrup"],
         "class-methods-use-this": "off",
         "comma-dangle": ["error", "never"],
-        "indent": ["error", 4],
+        "indent": ["error", 4, {
+            "SwitchCase": 1
+        }],
         "max-len": ["error", {
             "code": 120
         }],
+        "no-param-reassign": "off",
         "object-property-newline": ["error", {
             "allowAllPropertiesOnSameLine": false
         }],
@@ -36,13 +40,12 @@ module.exports = {
             "switches": "never"
         }],
 
-
         //Typescript overrides
+        "@typescript-eslint/no-inferrable-types": "off",
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": ["error", {
             "args": "none",
         }],
-
         "semi": "off",
         "@typescript-eslint/semi": ["error"]
     }

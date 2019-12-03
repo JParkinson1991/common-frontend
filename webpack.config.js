@@ -1,3 +1,4 @@
+const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 const WebpackNotifierPlugin = require('webpack-notifier');
 
@@ -48,9 +49,10 @@ module.exports = env => {
         devtool: (isProduction) ? false : 'inline-source-map',
         target: 'node',
         node: {
-            __dirname: true,
-            __filename: true
-        }
+            __dirname: false,
+            __filename: false
+        },
+        externals: [nodeExternals()]
     };
 
     // Environment specific config options
