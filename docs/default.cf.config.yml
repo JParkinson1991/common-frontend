@@ -1,0 +1,28 @@
+structure:
+    source_root: ./src #relative to this file, this will be used as the build context
+    output_root: ./dist #relative to this file
+    font_dir: fonts #name of fonts directory to use (files found under this directory in source will be treat as fonts)
+    font_mappings: {} #map fonts to specific directory name (key is search pattern in absolute path to font, value is name of directory to store font under)
+    image_dir: images
+    image_mappings: {}
+
+build:
+    clean: true # should build files be cleaned/delete prior to each build
+    entry: {} #entry files - key = dir/file name from output root, value = entry file from source root
+    publicPath: /path/to/output_root/from/access/root # path to the output_root from public access root
+
+develop:
+    clean: true #should build files be cleaned/delete prior to each build
+    devtool: inline-source-map #webpack dev tool to use
+    entry: {} #entry files - key = dir/file name relative to output root, value = entry file from source root
+    publicPath: /path/to/output_root/from/access/root # path to the output_root from public access root
+
+options:
+    server: # server settings if method is server, https://webpack.js.org/configuration/dev-server/#devserverhttps
+        host: localhost
+        port: 1234
+        compress: false
+        disableHostCheck: true
+        hot: true
+    watch: {} # https://webpack.js.org/configuration/watch/#watchoptions
+    webpack_notifier: {} #options to pass directly to webpack notifier plugin
