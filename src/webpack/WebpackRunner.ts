@@ -20,8 +20,6 @@ import StringInterface from '../utility/StringInterface';
 import Services from '../container/services';
 import 'reflect-metadata';
 import ConfigDataInterface from '../config/ConfigDataInterface';
-import * as util from 'util';
-
 
 import WebpackNotifierPlugin = require('webpack-notifier');
 import webpack = require('webpack');
@@ -185,49 +183,48 @@ export default class WebpackRunner {
             true
         );
 
-        // Add the hot module replacement plugin to the generated config
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        webpackConfig.plugins.push(new HotModuleReplacementPlugin());
+        // Determine public path
+        const protocol = (configData.options.server.https || false) ? 'https' : 'http';
+        const host = configData.options.server.host || this.serverDefaultHost;
+        const port = configData.options.server.port || this.serverDefaultPort;
 
-        // Build the webpack compiler
-        const webpackCompiler: Compiler = webpack(webpackConfig);
-
-        // Get the cleaned up server options
-        // const serverOptions = this.getServerOptions(configData);
-
-        // serverOptions.contentBase = this.path.internal.dirname(config.getFilePath());
-        // serverOptions.publicPath = `http://${serverOptions.host}:${serverOptions.port}/`;
-
+        // Grab the server options
         const serverOptions = {
-            host: 'localhost',
-            compress: false,
-            disableHostCheck: true,
-            hot: true,
-            hotOnly: true,
-            port: 1234,
-            headers: {
-                'Access-Control-Allow-Origin': '*'
+            ...{
+                // Defaults that allow to overrides
+                host: this.serverDefaultHost,
+                port: this.serverDefaultPort,
+                contentBase: this.path.internal.dirname(config.getFilePath())
             },
-            contentBase: this.path.internal.dirname(config.getFilePath()),
-            publicPath: 'http://localhost:1234/'
+            ...configData.options.server,
+            ...{
+                // Forced values
+                publicPath: `${protocol}://${host}:${port}/`
+            }
         };
 
-        const webpackDevServer = new WebpackDevServer(webpackCompiler, serverOptions);
-        webpackDevServer.listen(
-            serverOptions.port || this.serverDefaultPort,
-            serverOptions.host || this.serverDefaultHost,
-            (error: Error|undefined): void => {
-                if (error) {
-                    if (typeof callback === 'function') {
-                        callback(error);
-                    }
-                    else {
-                        throw error;
-                    }
+        // Add the hot module replacement plugin if required
+        if (serverOptions.hot) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            webpackConfig.plugins.push(new HotModuleReplacementPlugin());
+        }
+
+        WebpackDevServer.addDevServerEntrypoints(webpackConfig, serverOptions);
+
+        const compiler = webpack(webpackConfig);
+        const server = new WebpackDevServer(compiler, serverOptions);
+
+        server.listen(1234, 'localhost', (error: Error|undefined): void => {
+            if (error) {
+                if (typeof callback === 'function') {
+                    callback(error);
+                }
+                else {
+                    throw error;
                 }
             }
-        );
+        });
     }
 
     /**
@@ -271,6 +268,8 @@ export default class WebpackRunner {
         // Non server specific plugins
         // These are plugins that can be used in both dev and non dev builds
         // but not when a server is being used.
+        //
+        // Server specific functionality added in server method
         if (!forServer) {
             // Default build plugins
             // These are plugins that can exist in dev mode, non dev mode and server
@@ -283,13 +282,6 @@ export default class WebpackRunner {
             pluginArray.push(new MiniCssExtractPlugin({
                 filename: '[name].css'
             }));
-        }
-
-        // Server specific plugins
-        // These are plugins that can be used in both dev and non dev builds
-        // but only when a server is being used
-        if (forServer) {
-            pluginArray.push(new HotModuleReplacementPlugin());
         }
 
         // Add the webpack clean plugin as required
@@ -306,10 +298,11 @@ export default class WebpackRunner {
         // cleaning and ensuring it is in the right format (ends with '/')
         let publicPathComputed: string;
         if (forServer) {
-            const serverOptions = this.getServerOptions(configData);
-            const protocol = (serverOptions.https) ? 'https' : 'http';
+            const protocol = (configData.options.server.https || false) ? 'https' : 'http';
+            const host = configData.options.server.host || this.serverDefaultHost;
+            const port = configData.options.server.port || this.serverDefaultPort;
 
-            publicPathComputed = `${protocol}://${serverOptions.host}:${serverOptions.port}/`;
+            publicPathComputed = `${protocol}://${host}:${port}/`;
         }
         else {
             publicPathComputed = this.string.trimRight(
@@ -326,18 +319,15 @@ export default class WebpackRunner {
         }
 
         // Build and return the webpack config object
-        const webpackConfig: Configuration = {
+        return {
             mode: (!devMode) ? 'production' : 'development',
-            context: resolveRoot,
+            context: this.path.absoluteOrResolvedFrom(sourceRoot, resolveRoot),
             entry: (!devMode) ? configData.build.entry : configData.develop.entry,
             output: {
                 path: this.path.absoluteOrResolvedFrom(outputRoot, resolveRoot),
                 publicPath: publicPathComputed
             },
             resolve: {
-                alias: {
-                    '@': this.path.absoluteOrResolvedFrom(sourceRoot, resolveRoot)
-                },
                 modules: resolveModules
             },
             resolveLoader: {
@@ -412,33 +402,6 @@ export default class WebpackRunner {
             // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
             // @ts-ignore
             devtool: (!devMode) ? false : configData.develop.devtool // no sourcemaps in production
-        };
-
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        /*
-        console.log(util.inspect(webpackConfig, {
-            showHidden: true,
-            depth: null,
-            colors: true
-        }));
-         */
-
-        return webpackConfig;
-    }
-
-    /**
-     * Cleans and returns server options from config data
-     *
-     * @return {Configuration}
-     */
-    protected getServerOptions(config: ConfigDataInterface): WebpackDevServer.Configuration {
-        return {
-            ...{
-                host: this.serverDefaultHost,
-                port: this.serverDefaultPort
-            },
-            ...config.options.server
         };
     }
 
