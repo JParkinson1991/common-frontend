@@ -49,5 +49,4 @@ module.exports = {
         "semi": "off",
         "@typescript-eslint/semi": ["error"]
     }
-
 };
