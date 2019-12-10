@@ -1,0 +1,21 @@
+////
+/// @file _fontawesome.scss
+///
+/// Main fontawesome library entry point. This file can be used to import the
+/// library and all relevant helper/wrapper functionality provided by this
+/// package.
+///
+/// If singular files/components are to be importer it is the responsibility of
+/// the importer to ensure that all file dependencies are met.
+///
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+// Framework
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/brands';
+
+// Mixins
+@import 'mixins/fontawesome';

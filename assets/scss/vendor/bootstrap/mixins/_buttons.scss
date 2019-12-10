@@ -1,0 +1,78 @@
+////
+/// @file _buttons.scss
+///
+/// @group bootstrap
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Creates a default styled bootstrap button
+///
+/// This mixin provides a simple wrapper around the button-variant mixin
+///
+@mixin buttonDefault(){
+    @include button-variant(
+        $btn-default-color,
+        $btn-default-bg,
+        $btn-default-border
+    );
+}
+
+/// Creates a primary styled bootstrap button
+///
+/// This mixin provides a simple wrapper around the button-variant mixin
+///
+@mixin buttonPrimary(){
+    @include button-variant(
+        $btn-primary-color,
+        $btn-primary-bg,
+        $btn-primary-border
+    );
+}
+
+/// Creates a success styled bootstrap button
+///
+/// This mixin provides a simple wrapper around the button-variant mixin
+///
+@mixin buttonSuccess(){
+    @include button-variant(
+        $btn-success-color,
+        $btn-success-bg,
+        $btn-success-border
+    );
+}
+
+/// Creates an info styled bootstrap button
+///
+/// This mixin provides a simple wrapper around the button-variant mixin
+///
+@mixin buttonInfo(){
+    @include button-variant(
+        $btn-info-color,
+        $btn-info-bg,
+        $btn-info-border
+    );
+}
+
+/// Creates a warning styled bootstrap button
+///
+/// This mixin provides a simple wrapper around the button-variant mixin
+///
+@mixin buttonWarning(){
+    @include button-variant(
+        $btn-warning-color,
+        $btn-warning-bg,
+        $btn-warning-border
+    );
+}
+
+/// Creates a danger styled bootstrap button
+///
+/// This mixin provides a simple wrapper around the button-variant mixin
+///
+@mixin buttonDanger(){
+    @include button-variant(
+        $btn-danger-color,
+        $btn-danger-bg,
+        $btn-danger-border
+    );
+}

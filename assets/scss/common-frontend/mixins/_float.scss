@@ -1,0 +1,140 @@
+////
+/// @file _float.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Floats items with calculated margins etc.
+///
+/// This mixin should be applied to the element/elements identifier that are to be floated.
+///
+/// @param {string} $align
+///     The alignment of the floated items: left or right
+/// @param {int} $itemsPerLine
+///     The maximum number of items to display on the same row
+/// @param {unit} $itemMargin
+///     The margin between the items in a row, and between each row.
+/// @param {bool} $removeBottomMargin
+///     Should the bottom margin or the last row be removed? Defaults to true.
+/// @param {bool} $ofType
+///     If true, styling is applied to :nth-of-type elements.
+///     If false, styling is applied to :nth-child elements
+///
+@mixin floatItems($align, $itemsPerRow, $itemMargin: $spacer-default, $removeBottomMargin: true, $ofType: false){
+    $align: unquote($align);
+    @if(index($align, (left, right))){
+        @error 'Invalid float alignment. Expected: left, right';
+    }
+
+    //Determine variants
+    $nth: if($ofType == true, nth-of-type, nth-child);
+    $nthLast: if($ofType == true, nth-last-of-type, nth-last-child);
+    $margin: if($align == left, margin-right, margin-left);
+
+    //Default style for all items
+    width: calcWidth($itemsPerRow, $itemMargin);
+    margin-bottom: $itemMargin;
+    #{$margin}: $itemMargin;
+    float: $align;
+    clear: none;
+
+    //Nth styling
+    // Where $itemsPerRow = 2
+    // &:nth-child(2n) &:nth-of-type(2n)
+    //noinspection CssInvalidPseudoSelector
+    &:#{$nth}(#{$itemsPerRow}n){
+        #{$margin}: 0;
+    }
+
+    //Determine clear points
+    // Where $itemsPerRow = 2
+    // &:nth-child(2n+1) &:nth-of-type(2n+1)
+    //noinspection CssInvalidPseudoSelector
+    &:#{$nth}(#{$itemsPerRow}n+1){
+        clear: $align;
+    }
+
+    //Remove bottom margin as required
+    @if($removeBottomMargin){
+        // Where $itemsPerRow = 2
+        // &:nth-last-of-type(-n + 2):nth-of-type(2n + 1),
+        // &:nth-last-of-type(-n + 2):nth-of-type(2n + 1) ~ * {}
+        // &:nth-last-child(-n + 2):nth-child(2n + 1),
+        // &:nth-last-child(-n + 2):nth-child(2n + 1) ~ * {}
+        //noinspection CssInvalidPseudoSelector
+        &:#{$nthLast}(-n + #{$itemsPerRow}):#{$nth}(#{$itemsPerRow}n + 1),
+        &:#{$nthLast}(-n + #{$itemsPerRow}):#{$nth}(#{$itemsPerRow}n + 1) ~ * {
+            margin-bottom: 0;
+        }
+    }
+}
+
+/// Resets float styling applied to elements through the use of the floatItems() mixin.
+///
+/// This mixin should be applied to the selector that was targeted in the use of floatItems()
+///
+/// @param {string} $align
+///     The alignment of the floated items: left or right
+/// @param {int} $itemsPerLine
+///     The maximum number of items to display on the same row
+/// @param {unit} $itemMargin
+///     The margin between the items in a row, and between each row.
+/// @param {bool} $removeBottomMargin
+///     Should the bottom margin or the last row be removed? Defaults to true.
+/// @param {bool} $ofType
+///     If true, styling is applied to :nth-of-type elements.
+///     If false, styling is applied to :nth-child elements
+///
+@mixin floatItemsReset($align, $itemsPerRow, $ofType: false){
+    $align: unquote($align);
+    @if(index($align, (left, right))){
+        @error 'Invalid float alignment. Expected: left, right';
+    }
+
+    //Determine variants
+    $nth: if($ofType == true, nth-of-type, nth-child);
+    $nthLast: if($ofType == true, nth-last-of-type, nth-last-child);
+    $margin: if($align == left, margin-right, margin-left);
+
+    //Default resets for all items
+    margin-bottom: 0;
+    #{$margin}: 0;
+
+    //noinspection CssInvalidPseudoSelector
+    &:#{$nth}(#{$itemsPerRow}n){
+        #{$margin}: 0;
+    }
+
+    //noinspection CssInvalidPseudoSelector
+    &:#{$nth}(#{$itemsPerRow}n + 1){
+        clear: none;
+    }
+
+    //noinspection CssInvalidPseudoSelector
+    &:#{$nthLast}(-n + #{$itemsPerRow}):#{$nth}(#{$itemsPerRow}n + 1),
+    &:#{$nthLast}(-n + #{$itemsPerRow}):#{$nth}(#{$itemsPerRow}n + 1) ~ * {
+        margin-bottom: 0;
+    }
+}
+
+/// Refloats items to a new number of items per row
+///
+/// @param {string} $align
+///     The alignment of the floated items: left or right
+/// @param {int} $previousItemsPerRow
+///     The previous number of items being displayed on the same row
+/// @param {int} $newItemsPerRow
+///     The new number of items being displayed on the same row
+/// @param {unit} $itemMargin
+///     The margin between the items in a row, and between each row.
+/// @param {bool} $removeBottomMargin
+///     Should the bottom margin or the last row be removed? Defaults to true.
+/// @param {bool} $ofType
+///     If true, styling is applied to :nth-of-type elements.
+///     If false, styling is applied to :nth-child elements
+///
+@mixin refloatItems($align, $previousItemsPerLine, $newItemsPerLine, $itemMargin, $removeBottomMargin: true, $ofType: false){
+    @include floatItemsReset($align, $previousItemsPerLine, $ofType);
+    @include floatItems($align, $newItemsPerLine, $itemMargin, $removeBottomMargin, $ofType);
+}

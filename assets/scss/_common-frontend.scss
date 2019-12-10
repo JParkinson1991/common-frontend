@@ -1,0 +1,37 @@
+////
+/// @file _common-frontend.scss
+///
+/// Main package entry point, including this file will load the package in it's
+/// full functioning entirety. Package may be loaded by 'module' or section,
+/// however all dependent will need to be loaded as required.
+///
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+// Theme variables
+@import 'variables';
+
+// Bootstrap framework
+@import 'vendor/bootstrap/bootstrap';
+
+// Fontawesome framework
+@import 'vendor/fontawesome/fontawesome';
+
+// Functions
+@import 'common-frontend/functions/calc';
+@import 'common-frontend/functions/contains';
+@import 'common-frontend/functions/lists';
+@import 'common-frontend/functions/negative';
+@import 'common-frontend/functions/types';
+
+// Mixins
+@import 'common-frontend/mixins/clearfix';
+@import 'common-frontend/mixins/count';
+@import 'common-frontend/mixins/float';
+@import 'common-frontend/mixins/inline_block';
+@import 'common-frontend/mixins/media_queries';
+
+// Partials
+@import 'common-frontend/partials/forms';
+@import 'common-frontend/partials/html';
+@import 'common-frontend/partials/type';
