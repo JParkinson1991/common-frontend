@@ -1,0 +1,24 @@
+////
+/// @file _negative.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+@import 'types';
+
+/// Returns the negative equivalent of the provided value
+///
+/// @param {number | unit} $value
+///     The value to make negative
+///
+/// @return {number | unit}
+///     The negative equivalent of the value
+///
+@function negative($value){
+    @if(isNumber($value) == false){
+        @error '$value expected to be a number. Got: ' + type_of($value);
+    }
+
+    @return $value * -1;
+}

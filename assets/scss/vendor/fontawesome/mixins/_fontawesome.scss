@@ -1,0 +1,83 @@
+////
+/// @file _fontawesome.scss
+///
+/// @group fontawesome
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Creates a font awesome icon.
+///
+/// This mixin will fail to compile etc without prior inclusion of the font awesome package.
+///
+/// @param {string} $icon
+///     The font/character of the icon to render.
+///     It is strongly recommended to use $fa-var- variables
+///
+@mixin fontAwesomeIcon($icon){
+    @include fa-icon();
+    font-family: 'Font Awesome 5 Free', sans-serif;
+    font-weight: 400;
+    content: fa-content($icon);
+}
+
+/// Creates a font awesome icon using the solid icon set
+///
+/// This mixin will fail to compile etc without prior inclusion of the font awesome package.
+///
+/// @param {string} $icon
+///     The font/character of the icon to render.
+///     It is strongly recommended to use $fa-var- variables
+///
+@mixin fontAwesomeIconSolid($icon){
+    @include fa-icon();
+    font-family: 'Font Awesome 5 Free', sans-serif;
+    font-weight: 900;
+    content: fa-content($icon);
+}
+
+/// Creates a font awesome icon using the brands icon set
+///
+/// This mixin will fail to compile etc without prior inclusion of the font awesome package.
+///
+/// @param {string} $icon
+///     The font/character of the icon to render.
+///     It is strongly recommended to use $fa-var- variables
+///
+@mixin fontAwesomeIconBrand($icon){
+    @include fa-icon();
+    font-family: 'Font Awesome 5 Brands', sans-serif;
+    font-weight: normal;
+    content: fa-content($icon);
+}
+
+/// Applies the spinner style to a given font awesome icon
+///
+/// This mixin will fail to compile etc without prior inclusion of the font awesome package.
+///
+/// @param {int} $seconds
+///     The number of seconds the 'spin' should last
+///
+@mixin fontAwesomeSpin($seconds: 2){
+    @if(isNumber($seconds) == false){
+        @error 'Invalid $seconds received. Expected integer value';
+    }
+
+    animation: fa-spin #{$seconds}s infinite linear;
+}
+
+/// Applies the pulse style to a given font awesome icon
+///
+/// This mixin will fail to compile etc without prior inclusion of the font awesome package.
+///
+/// @param {int} $seconds
+///     How long the pulse animation should last
+/// @param {int} $steps
+///     How many steps in the pulse animation
+///
+@mixin fontAwesomePulse($seconds: 1, $steps: 8){
+    @if(isNumber($seconds) == false){
+        @error 'Invalid $seconds received. Expected integer value';
+    }
+
+    animation: fa-spin #{$seconds}s infinite steps(#{$steps});
+}
