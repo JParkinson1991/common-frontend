@@ -12,7 +12,9 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import {
     Compiler, Configuration, HotModuleReplacementPlugin, Stats
 } from 'webpack';
+import ImageminWebpackPlugin from 'imagemin-webpack-plugin';
 import { inject, injectable } from 'inversify';
+import * as _ from 'lodash';
 import * as WebpackDevServer from 'webpack-dev-server';
 import ConfigLoaderInterface from '../config/ConfigLoaderInterface';
 import PathInterface from '../utility/PathInterface';
@@ -26,6 +28,9 @@ import webpack = require('webpack');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const globImporter = require('node-sass-glob-importer');
 
 /**
  * Class AbstractWebpackRunner
@@ -86,13 +91,22 @@ export default class WebpackRunner {
      */
     // eslint-disable-next-line max-len
     public build(config: ConfigLoaderInterface, devMode: boolean, callback?: (error: Error, stats?: Stats) => void): void {
-        const webpackCompiler: Compiler = webpack(this.generateConfig(
-            config.getData(),
+        const configData = config.getData();
+
+        // Generate the webpack config
+        const webpackConfig = this.generateConfig(
+            configData,
             this.path.internal.dirname(config.getFilePath()),
             devMode,
             false
-        ));
+        );
 
+        // Non development builds will have image minification applied if needed
+        if (!devMode) {
+            this.injectImagemin(webpackConfig, configData);
+        }
+
+        const webpackCompiler: Compiler = webpack(webpackConfig);
         webpackCompiler.run((error: Error, stats: Stats): void => {
             if (typeof callback === 'function') {
                 callback(error, stats);
@@ -128,19 +142,13 @@ export default class WebpackRunner {
             false
         );
 
-        // Add the notifier plugin to webpack config
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        webpackConfig.plugins.push(new WebpackNotifierPlugin({
-            ...{
-                title: this.path.internal.basename(this.path.internal.dirname(config.getFilePath())),
-                alwaysNotify: false,
-                excludeWarnings: false,
-                skipFirstNotification: true,
-                sound: true
-            },
-            ...configData.options.webpack_notifier
-        }));
+        // Inject the webpack notifier plugin
+        // Depending on config values this method may do nothing
+        this.injectNotifier(
+            webpackConfig,
+            configData,
+            this.path.internal.basename(this.path.internal.dirname(config.getFilePath()))
+        );
 
         // Create a webpack watch options object
         const webpackWatchOptions = {
@@ -181,6 +189,14 @@ export default class WebpackRunner {
             this.path.internal.dirname(config.getFilePath()),
             devMode,
             true
+        );
+
+        // Inject the webpack notifier plugin
+        // Depending on config values this method may do nothing
+        this.injectNotifier(
+            webpackConfig,
+            configData,
+            this.path.internal.basename(this.path.internal.dirname(config.getFilePath()))
         );
 
         // Determine public path
@@ -244,6 +260,12 @@ export default class WebpackRunner {
      */
     // eslint-disable-next-line max-len
     protected generateConfig(configData: ConfigDataInterface, resolveRoot: string, devMode: boolean, forServer: boolean): Configuration {
+        /**
+         * generateConfig() Pre Processing
+         *
+         * Pre webpack config object creation steps
+         */
+
         // Set config related variables
         // Clean up path/directory name parameters
         const sourceRoot = this.string.trimRight(configData.structure.source_root, '/');
@@ -256,10 +278,35 @@ export default class WebpackRunner {
         // directory or nested within it's own package directory. If its the
         // latter than the nested directory must be searched when resolving
         // modules. Use this for both loaders and modules.
-        // todo: Add resolve alias for the resolve root
         const resolveModules = ['node_modules'];
         if (fs.existsSync(this.path.internal.resolve(appRoot, 'node_modules'))) {
             resolveModules.unshift(this.path.internal.resolve(appRoot, 'node_modules'));
+        }
+
+        // Determine any resolve aliases
+        const resolveAlias: { [key: string]: string } = {
+            ...{
+                __: resolveRoot,
+                __src: sourceRoot
+            },
+            ...configData.options.aliases
+        };
+        Object.keys(resolveAlias).forEach((key: string) => {
+            resolveAlias[key] = this.path.absoluteOrResolvedFrom(resolveAlias[key], resolveRoot);
+        });
+
+        // Determine build variables
+        let { build } = configData;
+        if (devMode) {
+            // Blindly merge in the development config if required
+            // this allows development settings to override build settings
+            // No need to worry about extra properties (that dont exist in
+            // build) from develop data here, they will be used explicitly where
+            // required (see devtool setting)
+            build = {
+                ...build,
+                ...configData.develop
+            };
         }
 
         // Dynamic configuration bins
@@ -285,9 +332,7 @@ export default class WebpackRunner {
         }
 
         // Add the webpack clean plugin as required
-        // If not dev mode and default build specifies clean
-        // or, is dev mode and dev settings specify clean
-        if ((!devMode && configData.build.clean) || (devMode && configData.develop.clean)) {
+        if (build.clean) {
             pluginArray.push(new CleanWebpackPlugin());
         }
 
@@ -307,9 +352,7 @@ export default class WebpackRunner {
         else {
             publicPathComputed = this.string.trimRight(
                 this.path.absoluteOrResolvedFrom(
-                    (!devMode)
-                        ? configData.build.publicPath
-                        : configData.develop.publicPath,
+                    build.publicPath,
                     resolveRoot
                 ),
                 '/'
@@ -318,16 +361,23 @@ export default class WebpackRunner {
             publicPathComputed += '/';
         }
 
+        /**
+         * generateConfig() Processing
+         *
+         * Create the initial webpack config object
+         */
+
         // Build and return the webpack config object
-        return {
+        const webpackConfig: Configuration = {
             mode: (!devMode) ? 'production' : 'development',
             context: this.path.absoluteOrResolvedFrom(sourceRoot, resolveRoot),
-            entry: (!devMode) ? configData.build.entry : configData.develop.entry,
+            entry: build.entry,
             output: {
                 path: this.path.absoluteOrResolvedFrom(outputRoot, resolveRoot),
                 publicPath: publicPathComputed
             },
             resolve: {
+                alias: resolveAlias,
                 modules: resolveModules
             },
             resolveLoader: {
@@ -348,9 +398,16 @@ export default class WebpackRunner {
                                     sourceMap: devMode // source maps only enabled in dev mode
                                 }
                             },
+                            // Postcss may be added here if required, see post processing
                             {
                                 loader: 'sass-loader',
                                 options: {
+                                    sassOptions: {
+                                        sourceMap: devMode,
+                                        outputStyle: (devMode) ? 'compressed' : 'nested',
+                                        // todo: note about glob importer working only for non aliased imports
+                                        importer: globImporter()
+                                    },
                                     sourceMap: devMode // source maps only enabled in dev mode
                                 }
                             }
@@ -403,6 +460,18 @@ export default class WebpackRunner {
             // @ts-ignore
             devtool: (!devMode) ? false : configData.develop.devtool // no sourcemaps in production
         };
+
+        /**
+         * generateConfig() Post Processing
+         *
+         * Pre webpack config object creation steps
+         */
+
+        // Inject the postcss rule as required
+        // Depending on config values this method may do nothing.
+        this.injectPostcss(webpackConfig, configData, resolveRoot, devMode);
+
+        return webpackConfig;
     }
 
     /**
@@ -459,6 +528,167 @@ export default class WebpackRunner {
     }
 
     /**
+     * Injects the webpack notifier plugin as required
+     *
+     * If the value of the option parameter for notifier is set to false no
+     * injection will occur.
+     *
+     * @param {webpack.Configuration} webpackConfig
+     *     The webpack configuration object
+     * @param {ConfigDataInterface} configData
+     *     The common frontend config data object
+     * @param {string} defaultTitle
+     *     A default title to use for the notifications
+     */
+    // eslint-disable-next-line max-len
+    protected injectNotifier(webpackConfig: Configuration, configData: ConfigDataInterface, defaultTitle: string = 'Common Frontend'): void {
+        // Only inject notifier plugin if not set to false
+        if (configData.options.notifier !== false) {
+            if (typeof configData.options.notifier !== 'object') {
+                configData.options.notifier = {};
+            }
+
+            // Add the notifier plugin to webpack config
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            webpackConfig.plugins.push(new WebpackNotifierPlugin({
+                ...{
+                    title: defaultTitle,
+                    alwaysNotify: false,
+                    excludeWarnings: false,
+                    skipFirstNotification: true,
+                    sound: true
+                },
+                ...configData.options.notifier
+            }));
+        }
+    }
+
+    /**
+     * Injects the imagemin webpack plugin as required
+     *
+     * If the value of the option parameter for imagemin is et to false no
+     * injection will occur.
+     *
+     * @param {webpack.Configuration} webpackConfig
+     *     The webpack configuration object
+     * @param {ConfigDataInterface} configData
+     *     The common frontend config data object
+     */
+    protected injectImagemin(webpackConfig: Configuration, configData: ConfigDataInterface): void {
+        if (configData.options.imagemin !== false) {
+            if (typeof configData.options.imagemin !== 'object') {
+                configData.options.imagemin = {};
+            }
+        }
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        webpackConfig.plugins.push(new ImageminWebpackPlugin({
+            ...{
+                test: /\.(jpe?g|png|gif|svg)$/i
+            },
+            ...configData.options.imagemin
+        }));
+    }
+
+    /**
+     * Injects the postcss plugin.
+     *
+     * If the value of the option parameter for postcss is set to false no
+     * injection will occur.
+     *
+     * The following injection is not the cleanest piece of code in the world
+     * but whilst not pretty internally it enabled a clean interface for users
+     * of this package to set, extend and/or inherit default postcss config.
+     *
+     * @param {webpack.Configuration} webpackConfig
+     *     The webpack configuration object
+     * @param {ConfigDataInterface} configData
+     *     The common frontend config data object
+     * @param {string} resolveRoot
+     *     The determined resolve root
+     * @param {boolean} devMode
+     *     Determined development mode indicator
+     */
+    // eslint-disable-next-line max-len
+    protected injectPostcss(webpackConfig: Configuration, configData: ConfigDataInterface, resolveRoot: string, devMode: boolean): void {
+        // eslint-disable-next-line max-len
+        /* eslint-disable max-len,@typescript-eslint/no-var-requires,global-require,@typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-ignore */
+        if (configData.options.postcss !== false) {
+            const styleRuleIndex = _.findIndex(webpackConfig.module?.rules, { test: /\.scss$/ });
+            // @ts-ignore
+            const cssLoaderIndex = _.findIndex(webpackConfig.module?.rules[styleRuleIndex].use, { loader: 'css-loader' });
+            const injectionIndex = cssLoaderIndex + 1;
+
+            const postcssUseDefaults = _.get(_.pick(configData.options.postcss, 'useDefaults'), 'useDefaults', false);
+            const postcssUserConfig = _.omit(configData.options.postcss, 'useDefaults');
+
+            // If a config path is in the user config, resolve it from the
+            // resolve root if required
+            // @ts-ignore
+            if (_.get(postcssUserConfig, 'config.path', false) !== false) {
+                // @ts-ignore
+                postcssUserConfig.config.path = this.path.absoluteOrResolvedFrom(
+                    // @ts-ignore
+                    postcssUserConfig.config.path,
+                    resolveRoot
+                );
+            }
+
+            // Splice in the loader definition after the sass-loader but
+            // before the css-loader, view the webpack config object creation
+            // comments to view it's position in the chain.
+            // @ts-ignore
+            webpackConfig.module.rules[styleRuleIndex].use.splice(injectionIndex, 0, {
+                loader: 'postcss-loader',
+                // @ts-ignore
+                options: {
+                    ...postcssUserConfig,
+                    ...{
+                        ident: 'postcss',
+                        plugins: (loader: {}): any[] => {
+                            let pluginsArray: any[] = [];
+
+                            // Add the default plugins if requested
+                            if (postcssUseDefaults) {
+                                pluginsArray.push(require('postcss-cssnext'));
+                                pluginsArray.push(require('cssnano'));
+                            }
+
+                            if (Object.prototype.hasOwnProperty.call(postcssUserConfig, 'plugins')) {
+                                // @ts-ignore
+                                if (typeof postcssUserConfig.plugins === 'function') {
+                                    // @ts-ignore
+                                    pluginsArray = [
+                                        ...pluginsArray,
+                                        // @ts-ignore
+                                        ...postcssUserConfig.plugins(loader)
+                                    ];
+                                }
+                                // @ts-ignore
+                                else if (Array.isArray(postcssUserConfig.plugins)) {
+                                    pluginsArray = [
+                                        ...pluginsArray,
+                                        // @ts-ignore
+                                        ...postcssUserConfig.plugins
+                                    ];
+                                }
+                            }
+
+                            // @ts-ignore
+                            return pluginsArray;
+                        },
+                        sourceMap: devMode // only use sourcemaps during development
+                    }
+                }
+            });
+            // eslint-disable-next-line max-len
+            /* eslint-enable @typescript-eslint/no-var-requires,global-require,@typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-ignore */
+        }
+    }
+
+    /**
      * Handles compiler cli output
      *
      * Provide accessible means of replicating webpack cli output's
@@ -502,6 +732,7 @@ export default class WebpackRunner {
             }));
         }
 
+        /* eslint-enable @typescript-eslint/ban-ts-ignore, no-console */
         return 0;
     }
 

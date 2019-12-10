@@ -98,7 +98,7 @@ export default class InitCommand extends AbstractCommand implements CommandInter
             },
             {
                 option: '-f, --filename <name>',
-                description: 'The name to of the config file to create, defaults to the parent directory name.'
+                description: 'The name of the config file to create'
             },
             {
                 option: '-o, --overwrite',
@@ -128,17 +128,21 @@ export default class InitCommand extends AbstractCommand implements CommandInter
             process.cwd()
         );
 
-        // Determine config name
-        const configName = opts.f || opts.filename || this.path.internal.basename(configDir);
+        // Determine filename
+        // Default to null so config loader default is used when option omitted
+        const configArg = opts.f || opts.filename || null;
+        const configFilename = (typeof configArg === 'string' && configArg.length > 0)
+            ? configArg
+            : null;
 
         // Determine force flag
-        const overwrite = !!(opts.o || opts.overwrite);
         // Double !! ensure bool, if neither set false -> true -> false
         // If one set string (truthy) -> false -> true
+        const overwrite = !!(opts.o || opts.overwrite);
 
         let configPath = '';
         try {
-            configPath = ConfigLoader.createFile(configDir, configName, overwrite, true);
+            configPath = ConfigLoader.createFile(configDir, configFilename, overwrite, true);
         }
         catch (error) {
             this.output.error(error.message);
@@ -161,7 +165,7 @@ export default class InitCommand extends AbstractCommand implements CommandInter
             }
 
             try {
-                ConfigLoader.createFile(configDir, configName.toString(), overwrite);
+                ConfigLoader.createFile(configDir, configFilename, overwrite);
                 this.output.success('Configuration file created successfully');
             }
             catch (error) {

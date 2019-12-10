@@ -16,7 +16,6 @@ import ConsoleOutputInterface from '../console/io/ConsoleOutputInterface';
 import Services from './services';
 import Path from '../utility/Path';
 import ConfigLoader from '../config/ConfigLoader';
-import Yaml from '../utility/Yaml';
 import String from '../utility/String';
 import WebpackRunner from '../webpack/WebpackRunner';
 import BuildCommand from '../console/command/commands/BuildCommand';
@@ -30,7 +29,6 @@ container.bind<ConfigLoader>(Services.ConfigLoader).to(ConfigLoader);
 container.bind<Path>(Services.Path).to(Path);
 container.bind<String>(Services.String).to(String); // eslint-disable-line @typescript-eslint/ban-types
 container.bind<WebpackRunner>(Services.WebpackRunner).to(WebpackRunner);
-container.bind<Yaml>(Services.Yaml).to(Yaml);
 
 // Application Commands
 container.bind<BuildCommand>(Services.BuildCommand).to(BuildCommand);

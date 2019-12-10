@@ -4,7 +4,7 @@
  *
  * @author Josh Parkinson <joshparkinson1991@gmail.com>
  */
-import {Stats} from 'webpack';
+import { Stats } from 'webpack';
 import ConfigLoaderInterface from '../config/ConfigLoaderInterface';
 
 /**
@@ -51,6 +51,6 @@ export default interface WebpackRunnerInterface {
      * @param {(error: Error) => void} callback
      *     A server error handler callback
      */
-    server(config: ConfigLoaderInterface, devMode: boolean, callback?: (error: Error) => void ): void;
+    server(config: ConfigLoaderInterface, devMode: boolean, callback?: (error: Error) => void): void;
 
 }

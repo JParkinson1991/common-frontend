@@ -36,17 +36,25 @@ export default interface ConfigDataInterface {
     };
 
     develop: {
-        clean: boolean;
+        clean?: boolean;
         devtool: string;
-        entry: {
+        entry?: {
             [key: string]: string;
         };
-        publicPath: string;
+        publicPath?: string;
     };
 
     options: {
+        aliases: {
+            [key: string]: string;
+        };
+        imagemin: false|{};
+        notifier: false|{};
+        postcss: false|{
+            useDefaults: boolean;
+            [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+        };
         server: WebpackDevServer.Configuration;
         watch: webpack.Options.WatchOptions;
-        webpack_notifier: {};
     };
 }

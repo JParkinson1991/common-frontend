@@ -14,8 +14,8 @@ import ConfigDataInterface from './ConfigDataInterface';
 import ConfigLoaderInterface from './ConfigLoaderInterface';
 import 'reflect-metadata';
 import Services from '../container/services';
-import YamlInterface from '../utility/YamlInterface';
 import StringInterface from '../utility/StringInterface';
+import dynamicRequire from '../utility/functions/dynamicRequire';
 
 /**
  * Class Config
@@ -51,35 +51,24 @@ export default class ConfigLoader implements ConfigLoaderInterface {
     private string: StringInterface;
 
     /**
-     * The yaml loader
-     *
-     * @var {YamlInterface}
-     */
-    private yaml: YamlInterface;
-
-    /**
      * The default configuration file location
      *
      * Due to webpack bundling ensure this path is correct for the output file.
      */
-    private static defaultConfigFile = path.resolve(appRoot, 'docs/default.cf.config.yml');
+    private static defaultConfigFilePath = path.resolve(appRoot, 'assets/config/default.cf.config.js');
 
     /**
      * The suffix of the files accepted by this class when loading config.
      */
-    private static fileSuffix: string = '.cf.config.yml';
+    private static defaultConfigFileName: string = '.cf.config.js';
 
     /**
+     * ConfigLoader constructor
      *
      * @param {StringInterface} string
-     * @param {YamlInterface} yaml
      */
-    public constructor(
-        @inject(Services.String) string: StringInterface,
-        @inject(Services.Yaml) yaml: YamlInterface
-    ) {
+    public constructor(@inject(Services.String) string: StringInterface) {
         this.string = string;
-        this.yaml = yaml;
     }
 
     /**
@@ -96,11 +85,15 @@ export default class ConfigLoader implements ConfigLoaderInterface {
     public findFiles(inDirectory: string, recursive: boolean = false): string[] {
         inDirectory = this.string.trimRight(inDirectory, '/');
 
-        return glob.sync(
-            (recursive)
-                ? `${inDirectory}/**/*${ConfigLoader.fileSuffix}`
-                : `${inDirectory}/*${ConfigLoader.fileSuffix}`
-        );
+        // Non recursive searches involve a simple file check
+        if (!recursive) {
+            return (fs.existsSync(`${inDirectory}/${ConfigLoader.defaultConfigFileName}`))
+                ? [`${inDirectory}/${ConfigLoader.defaultConfigFileName}`]
+                : [];
+        }
+
+        // Recursive searches require globing
+        return glob.sync(`${inDirectory}/**/${ConfigLoader.defaultConfigFileName}`);
     }
 
     /**
@@ -109,16 +102,12 @@ export default class ConfigLoader implements ConfigLoaderInterface {
      * @param {string} filePath
      */
     public load(filePath: string): void {
-        if (!filePath.endsWith(ConfigLoader.fileSuffix)) {
-            throw new Error('Invalid config file name');
-        }
-
         if (!fs.existsSync(filePath) || !fs.lstatSync(filePath).isFile()) {
             throw new Error('Config file not found');
         }
 
         this.filePath = filePath;
-        this.configData = this.yaml.loadFile(this.filePath) as ConfigDataInterface;
+        this.configData = dynamicRequire(filePath) as ConfigDataInterface;
     }
 
     /**
@@ -152,10 +141,9 @@ export default class ConfigLoader implements ConfigLoaderInterface {
      *
      * @param {string} inDir
      *     The path to the directory to create the config file in.
-     * @param {string} withName
+     * @param {string|null} withName
      *     The name of the configuration file to generate.
-     *     This name will be suffixed with the config file suffix defined in
-     *     this class.
+     *     If null the default filename will be used
      * @param {boolean} overwrite
      *     If a configuration file already exists in the determined location and
      *     this value is set to false an error will be thrown. Set to true to
@@ -179,37 +167,22 @@ export default class ConfigLoader implements ConfigLoaderInterface {
             );
         }
 
-        const filePath = this.generatePath(inDir, withName);
+        // Determine file name
+        const filePath = (withName !== null)
+            ? `${inDir}/${withName}`
+            : `${inDir}/${ConfigLoader.defaultConfigFileName}`;
+
+        // Check whether file can be created
         if (!overwrite && fs.existsSync(filePath)) {
             throw new Error(`Configuration file already exists at: ${filePath}`);
         }
 
+        // Create as necessary
         if (!dryRun) {
-            fs.copyFileSync(this.defaultConfigFile, filePath);
+            fs.copyFileSync(this.defaultConfigFilePath, filePath);
         }
 
         return filePath;
-    }
-
-    /**
-     * Returns a generated configuration file path.
-     *
-     * @param {string} inDir
-     *     The path to the directory to create the config file in.
-     * @param {string} withName
-     *     The name of the configuration file to generate.
-     *     This name will be suffixed with the config file suffix defined in
-     *     this class.
-     *
-     * @return {string}
-     */
-    public static generatePath(inDir: string, withName: string|null = null): string {
-        if (withName === null || withName === '') {
-            return `${inDir}/${path.basename(inDir)}${this.fileSuffix}`;
-        }
-
-
-        return `${inDir}/${withName}${this.fileSuffix}`;
     }
 
 }

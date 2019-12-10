@@ -1,0 +1,13 @@
+dest: ./documentation
+exclude: []
+package: ./package.json
+theme: default
+autofill:
+    - throw
+    - content
+    - require
+groups:
+    bootstrap: Bootstrap
+    fontawesome: Font Awesome
+    styles: Styles
+    utility: Utility

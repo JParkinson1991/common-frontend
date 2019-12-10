@@ -105,6 +105,8 @@ export default class AbstractWebpackCommand extends AbstractCommand {
         catch (error) {
             if (exitOnError) {
                 this.output.error(error.message);
+                // eslint-disable-next-line no-console
+                console.log(error);
                 process.exit(1);
             }
             else {

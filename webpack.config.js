@@ -52,7 +52,7 @@ module.exports = env => {
             __dirname: false,
             __filename: false
         },
-        externals: [nodeExternals()]
+        externals: [nodeExternals()],
     };
 
     // Environment specific config options
