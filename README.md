@@ -18,8 +18,9 @@ package.*
 
 This package provides a single command line entry point at `common-frontend`
 
-Commands can be run via `package.json` scripts or  using `npx`. All examples
-below use `npx` for simplicity.
+Commands can be run via `package.json` scripts or  using `npx`.
+
+All examples below use `npx` for simplicity.
 
 #### Documentation/Help
 
@@ -74,9 +75,10 @@ Configuration is handled using a standard javascript file.
 This file is capable of requiring other modules thus extending the functionality
 of this package.
 
-The default configuration file `.cf.config.js` will be searched for in the
-current working directory and child directories when `build` or `server`
-commands are executed, if, no config file option is provided to the command.
+The default [configuration file `.cf.config.js`](assets/config/default.cf.config.js)
+will be searched for in the current working directory and child directories
+when `build` or `server` commands are executed, if, no config file option is
+provided to the command.
 
 Rather than documenting all configuration options here they are detailed in
 the [configuration file](assets/config/default.cf.config.js) itself. This file
