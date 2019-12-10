@@ -36,7 +36,7 @@ npx common-frontend [command] -h
 To initialise a project for use with this command run the following.
 
 ```
-npx common-front init
+npx common-frontend init
 ```
 
 This will generate the configuration file to use in builds/development server
@@ -47,13 +47,13 @@ runs.
 Builds a project using the [configuration](#configuration)
 
 ```
-npx common-front build
+npx common-frontend build
 
 # Dev mode
-npx common-front build -d
+npx common-frontend build -d
 
 # Watch mode
-npx common-front build -w
+npx common-frontend build -w
 ```
 
 #### Development Server
@@ -61,10 +61,10 @@ npx common-front build -w
 Runs a development server using the [configuration](#configuration)
 
 ```
-npx common-front server
+npx common-frontend server
 
 # Dev mode
-npx common-front server -d
+npx common-frontend server -d
 ```
 
 ## Configuration
