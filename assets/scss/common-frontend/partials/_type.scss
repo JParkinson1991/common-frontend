@@ -1,0 +1,33 @@
+////
+/// @file _type.scss
+///
+/// @group style
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+h1, h2, h3,
+.h1, .h2, .h3 {
+    margin-top: 0;
+    margin-bottom: $spacer-default;
+}
+
+h4, h5, h6,
+.h1, .h2, .h3 {
+    margin-top: 0;
+    margin-bottom: $spacer-small;
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
+ol, ul {
+    padding-left: $spacer-default;
+}
+
+.page-header {
+    margin: 0 0 $spacer-default;
+    padding-bottom: (($spacer-default/ 2) - 1);
+    border-bottom: 1px solid $page-header-border-color;
+}
+

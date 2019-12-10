@@ -1,0 +1,59 @@
+////
+/// @file _count.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Styles an element based on it's count (number of siblings + itself)
+///
+/// @param {int} $number
+///     The number of elements to style for
+/// @param {string} $comparison
+///     The comparision to use against the number
+@mixin count($number, $comparison: '='){
+    $nth: null;
+    @if index(('greater' 'more' '>'), $comparison){
+        $nth: 'n + #{$number}';
+    }
+    @else if index(('less' 'fewer' '<'), $comparison){
+        $nth: '-n + #{$number}';
+    }
+    @else if index(('equal' 'same' '='), $comparison){
+        $nth: $number;
+    }
+    @else {
+        @error 'Invalid $compaision value. Expects: > < =';
+    }
+
+    &:nth-last-child(#{$nth}):first-child {
+        &,
+        & ~ * {
+            @content;
+        }
+    }
+}
+
+/// Styles an element if its count is greater than the number provided
+///
+/// @param {int} $number
+///     The number of items in which the count must be more than for the style to apply
+@mixin countGreaterThan($number){
+    @include count($number, '>');
+}
+
+/// Styles an element if its count is greater than the number provided
+///
+/// @param {int} $number
+///     The number of items in which the count must be less than for the style to apply
+@mixin countLessThan($number){
+    @include count($number, '<');
+}
+
+/// Styles an element if its count is greater than the number provided
+///
+/// @param {int} $number
+///     The number of items in which the count must be equal to for the style to apply
+@mixin countEquals($number){
+    @include count($number, '=');
+}

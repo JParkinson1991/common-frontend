@@ -1,0 +1,31 @@
+////
+/// @file _bootstrap.scss
+///
+/// Main bootstrap entry point. This file can be used to import the bootstrap
+/// library and all relevant helper/wrapper functionality provided by this
+/// package.
+///
+/// If singular files/components are to be importer it is the responsibility of
+/// the importer to ensure that all file dependencies are met.
+///
+/// NOTE:
+/// Bootstrap variables are not overridden in this file.
+/// Variable overrides provided by this package must be imported manually.
+/// Importing the main package entry file will automatically import overrides.
+///
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+// Import glyphicon variables
+@import 'util/glyphicons';
+
+// Bootstrap framework
+@import '~bootstrap-sass/assets/stylesheets/bootstrap';
+
+// Mixins
+@import 'mixins/buttons';
+@import 'mixins/grid';
+@import 'mixins/glyphicons';
+
+// Partials
+@import 'partials/buttons';
