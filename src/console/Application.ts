@@ -83,7 +83,7 @@ export default class Application {
                 else {
                     subCommand.option(
                         optionDefinition.option,
-                        optionDefinition.description,
+                        optionDefinition.description
                     );
                 }
             });

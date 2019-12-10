@@ -40,6 +40,9 @@ module.exports = {
             "switches": "never"
         }],
 
+        // eslint-plugin-import
+        "import/extensions": "off",
+
         //Typescript overrides
         "@typescript-eslint/no-inferrable-types": "off",
         "no-unused-vars": "off",
