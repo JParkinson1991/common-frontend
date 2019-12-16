@@ -51,13 +51,6 @@ export default class ConfigLoader implements ConfigLoaderInterface {
     private string: StringInterface;
 
     /**
-     * The default configuration file location
-     *
-     * Due to webpack bundling ensure this path is correct for the output file.
-     */
-    private static defaultConfigFilePath = path.resolve(appRoot, 'assets/config/default.cf.config.js');
-
-    /**
      * The suffix of the files accepted by this class when loading config.
      */
     private static defaultConfigFileName: string = '.cf.config.js';
@@ -177,9 +170,28 @@ export default class ConfigLoader implements ConfigLoaderInterface {
             throw new Error(`Configuration file already exists at: ${filePath}`);
         }
 
+        // Find the default file path
+        // Required so default file can be found when package is in various states.
+        let defaultFilePath = null;
+        [
+            // When package is linked it exists as the appRoot
+            path.resolve(appRoot, 'assets/config/default.cf.config.js'),
+            // This is the path relative to the build output file.
+            path.resolve(__dirname, '../assets/config/default.cf.config.js')
+        ].forEach((defaultFileSearchPath: string) => {
+            if (fs.existsSync(defaultFileSearchPath)) {
+                defaultFilePath = defaultFileSearchPath;
+            }
+        });
+
+        // If not found throw error
+        if (defaultFilePath === null) {
+            throw new Error('Internal error. Failed to find default config file. Please create manually.');
+        }
+
         // Create as necessary
         if (!dryRun) {
-            fs.copyFileSync(this.defaultConfigFilePath, filePath);
+            fs.copyFileSync(defaultFilePath, filePath);
         }
 
         return filePath;
