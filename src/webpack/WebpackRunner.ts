@@ -273,15 +273,21 @@ export default class WebpackRunner {
         const fontDir = this.string.trimRight(configData.structure.font_dir, '/');
         const imageDir = this.string.trimRight(configData.structure.image_dir, '/');
 
-        // Determine module resolution folders, this module may exist in a state
-        // where it's dependencies exist in the top level project node_modules
-        // directory or nested within it's own package directory. If its the
-        // latter than the nested directory must be searched when resolving
-        // modules. Use this for both loaders and modules.
-        const resolveModules = ['node_modules'];
+        // Determine module resolve paths.
+        // This package may exist where its dependencies exists in various
+        // locations. The following ensures the current directory and parent
+        // node_modules folders are searched. If a node_module directory exists
+        // at the application root it is searched. If a node_modules directory
+        // exists as a sibling of the resolve roo (usually the config file
+        // location) it is searched
+        let resolveModules = ['node_modules'];
         if (fs.existsSync(this.path.internal.resolve(appRoot, 'node_modules'))) {
             resolveModules.unshift(this.path.internal.resolve(appRoot, 'node_modules'));
         }
+        if (fs.existsSync(this.path.internal.resolve(resolveRoot, 'node_modules'))) {
+            resolveModules.unshift(this.path.internal.resolve(resolveRoot, 'node_modules'));
+        }
+        resolveModules = _.uniq(resolveModules);
 
         // Determine any resolve aliases
         const resolveAlias: { [key: string]: string } = {
@@ -308,6 +314,29 @@ export default class WebpackRunner {
                 ...configData.develop
             };
         }
+
+        // Determine webpack config using source root
+        const webpackContext = this.path.absoluteOrResolvedFrom(sourceRoot, resolveRoot);
+
+        // Resolve all entry files relative to the context
+        const webpackEntry: { [key: string]: string } = {};
+        Object.keys(build.entry).forEach((bundleName: string) => {
+            let bundleProcessed = this.path.absoluteOrResolvedFrom(
+                build.entry[bundleName],
+                webpackContext
+            );
+
+            bundleProcessed = this.path.internal.relative(
+                webpackContext,
+                bundleProcessed
+            );
+
+            if (bundleProcessed.substr(0, 1) !== '.' && bundleProcessed.substr(0, 1) !== '/') {
+                bundleProcessed = `./${bundleProcessed}`;
+            }
+
+            webpackEntry[bundleName] = bundleProcessed;
+        });
 
         // Dynamic configuration bins
         const pluginArray = [];
@@ -370,8 +399,8 @@ export default class WebpackRunner {
         // Build and return the webpack config object
         const webpackConfig: Configuration = {
             mode: (!devMode) ? 'production' : 'development',
-            context: this.path.absoluteOrResolvedFrom(sourceRoot, resolveRoot),
-            entry: build.entry,
+            context: webpackContext,
+            entry: webpackEntry,
             output: {
                 path: this.path.absoluteOrResolvedFrom(outputRoot, resolveRoot),
                 publicPath: publicPathComputed
