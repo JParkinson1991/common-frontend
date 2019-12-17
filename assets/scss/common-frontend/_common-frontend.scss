@@ -1,0 +1,35 @@
+////
+/// @file _common-frontend.scss
+///
+/// Main common-frontend entry point. This file can be used to import the
+/// common-frontend library in its entirety without including any vendor
+/// assets.
+///
+/// If singular files/components are to be importer it is the responsibility of
+/// the importer to ensure that all file dependencies are met.
+///
+/// NOTE:
+/// No variables are initialised during this import.
+/// Importer must manually import/assign required variables manually.
+///
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+// Functions
+@import 'functions/calc';
+@import 'functions/contains';
+@import 'functions/lists';
+@import 'functions/negative';
+@import 'functions/types';
+
+// Mixins
+@import 'mixins/clearfix';
+@import 'mixins/count';
+@import 'mixins/float';
+@import 'mixins/inline_block';
+@import 'mixins/media_queries';
+
+// Partials
+@import 'partials/forms';
+@import 'partials/html';
+@import 'partials/type';
