@@ -309,6 +309,29 @@ export default class WebpackRunner {
             };
         }
 
+        // Determine webpack config using source root
+        const webpackContext = this.path.absoluteOrResolvedFrom(sourceRoot, resolveRoot);
+
+        // Resolve all entry files relative to the context
+        const webpackEntry: { [key: string]: string } = {};
+        Object.keys(build.entry).forEach((bundleName: string) => {
+            let bundleProcessed = this.path.absoluteOrResolvedFrom(
+                build.entry[bundleName],
+                webpackContext
+            );
+
+            bundleProcessed = this.path.internal.relative(
+                webpackContext,
+                bundleProcessed
+            );
+
+            if (bundleProcessed.substr(0, 1) !== '.' && bundleProcessed.substr(0, 1) !== '/') {
+                bundleProcessed = `./${bundleProcessed}`;
+            }
+
+            webpackEntry[bundleName] = bundleProcessed;
+        });
+
         // Dynamic configuration bins
         const pluginArray = [];
 
@@ -370,8 +393,8 @@ export default class WebpackRunner {
         // Build and return the webpack config object
         const webpackConfig: Configuration = {
             mode: (!devMode) ? 'production' : 'development',
-            context: this.path.absoluteOrResolvedFrom(sourceRoot, resolveRoot),
-            entry: build.entry,
+            context: webpackContext,
+            entry: webpackEntry,
             output: {
                 path: this.path.absoluteOrResolvedFrom(outputRoot, resolveRoot),
                 publicPath: publicPathComputed
