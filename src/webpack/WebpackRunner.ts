@@ -231,7 +231,7 @@ export default class WebpackRunner {
         const compiler = webpack(webpackConfig);
         const server = new WebpackDevServer(compiler, serverOptions);
 
-        server.listen(1234, 'localhost', (error: Error|undefined): void => {
+        server.listen(port, host, (error: Error|undefined): void => {
             if (error) {
                 if (typeof callback === 'function') {
                     callback(error);
