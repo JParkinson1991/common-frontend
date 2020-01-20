@@ -1,0 +1,29 @@
+// todo: comment
+
+@function stringContains($string, $subString){
+    @return stringContainsSensitive(to-lower_case($string), to_lower_case($subString));
+}
+
+@function stringContainsSensitive($string, $subString){
+    @return str-index($string, $subString);
+}
+
+@function stringContainsAll($string, $subStrings){
+    @each $subString in $subString {
+        @if not stringContains($string, $subString) {
+            @return false;
+        }
+    }
+
+    @return true;
+}
+
+@function stringContainsOne($string, $subStrings){
+    @each $subString in $subStrings {
+        @if stringContains($string, $subString) {
+            @return true;
+        }
+    }
+
+    @return false;
+}

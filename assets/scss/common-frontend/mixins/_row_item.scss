@@ -1,0 +1,38 @@
+@mixin rowItem($itemsPerRow, $itemMargin, $lastRowMarginBottom: 0, $nthOfType: false){
+    $nthSelector: if($nthOfType, 'nth-of-type', 'nth-child');
+    $nthLastSelector: if($nthOfType, 'nth-last-of-type', 'nth-last-child');
+
+    width: calcWidth($itemsPerRow, $itemMargin);
+    margin-bottom: $itemMargin;
+    margin-right: $itemMargin;
+
+    &:#{$nthSelector}(#{$itemsPerRow}n){
+        margin-right: 0;
+    }
+
+    &:#{$nthLastSelector}(-n + #{$itemsPerRow}):#{$nthSelector}(#{$itemsPerRow}n + 1),
+    &:#{$nthLastSelector}(-n + #{$itemsPerRow}):#{$nthSelector}(#{$itemsPerRow}n + 1) ~ * {
+        margin-bottom: $lastRowMarginBottom;
+    }
+}
+
+@mixin rowItemDisable($itemsPerRow, $nthOfType: false){
+    @include rowItem($itemsPerRow, 0, 0, $nthOfType);
+    width: 100%;
+}
+
+@mixin rowItemReset($previousItemsPerRow, $newItemsPerRow, $itemMargin, $lastRowMarginBottom: 0, $nthOfType: false){
+    $nthSelector: if($nthOfType, 'nth-of-type', 'nth-child');
+    $nthLastSelector: if($nthOfType, 'nth-last-of-type', 'nth-last-child');
+
+    &:#{$nthSelector}(#{$previousItemsPerRow}n){
+        margin-right: $itemMargin;
+    }
+
+    &:#{$nthLastSelector}(-n + #{$previousItemsPerRow}):#{$nthSelector}(#{$previousItemsPerRow}n + 1),
+    &:#{$nthLastSelector}(-n + #{$previousItemsPerRow}):#{$nthSelector}(#{$previousItemsPerRow}n + 1) ~ * {
+        margin-bottom: $itemMargin;
+    }
+
+    @include rowItem($newItemsPerRow, $itemMargin, $lastRowMarginBottom, $nthOfType);
+}

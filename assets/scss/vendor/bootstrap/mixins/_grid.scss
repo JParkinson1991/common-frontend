@@ -5,12 +5,26 @@
 /// @author Josh Parkinson <joshparkinson1991@gmail.com>
 ////
 
+@mixin bootstrapContainerFixed(){
+    @include container-fixed;
+
+    @media (min-width: $screen-sm-min) {
+        width: $container-sm;
+    }
+    @media (min-width: $screen-md-min) {
+        width: $container-md;
+    }
+    @media (min-width: $screen-lg-min) {
+        width: $container-lg;
+    }
+}
+
 /// Generates a bootstrap row element
 ///
 @mixin bootstrapRow(){
     @include clearfix();
-    margin-right: negative(floor($grid-gutter-width / 2));
-    margin-left: negative(ceil($grid-gutter-width / 2));
+    margin-right: -(floor($grid-gutter-width / 2));
+    margin-left: -(ceil($grid-gutter-width / 2));
 }
 
 /// Generates a bootstrap column element

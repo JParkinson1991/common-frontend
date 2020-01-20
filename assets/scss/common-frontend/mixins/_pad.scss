@@ -1,0 +1,29 @@
+////
+/// @file _media_queries.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Applies relevant per breakpoint padding to an element
+///
+/// Example usage:
+/// .element {
+///    @include pad();
+/// }
+///
+@mixin pad(){
+    padding: $padding-xs-vertical $padding-xs-horizontal;
+
+    @include tablet(){
+        padding: $padding-small-vertical $padding-small-horizontal;
+    }
+
+    @include desktop(){
+        padding: $padding-base-vertical $padding-base-horizontal;
+    }
+
+    @include widescreen(){
+        padding: $padding-large-vertical $padding-large-horizontal;
+    }
+}

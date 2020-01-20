@@ -1,0 +1,9 @@
+button {
+    @include mobile {
+        width: 100%;
+    }
+
+    text-align: center;
+    padding: $btn-padding-vertical $btn-padding-vertical;
+    border: none;
+}
