@@ -56,33 +56,33 @@ $spacer-small: $spacer-default / 2 !default;
 $spacer-xs: $spacer-small / 2 !default;
 
 
-$padding-base-vertical:     6px !default;
-$padding-base-horizontal:   12px !default;
+$padding-base-vertical:     $spacer-default !default;
+$padding-base-horizontal:   $spacer-default !default;
 
-$padding-xs-vertical:       1px !default;
-$padding-xs-horizontal:     5px !default;
+$padding-xs-vertical:       $spacer-xs !default;
+$padding-xs-horizontal:     $spacer-xs !default;
 
-$padding-small-vertical:    5px !default;
-$padding-small-horizontal:  10px !default;
+$padding-small-vertical:    $spacer-small !default;
+$padding-small-horizontal:  $spacer-small !default;
 
-$padding-large-vertical:    10px !default;
-$padding-large-horizontal:  16px !default;
+$padding-large-vertical:    $spacer-large !default;
+$padding-large-horizontal:  $spacer-large !default;
 
 //== Buttons
 //
 //##
 
-$btn-padding-vertical: $padding-base-vertical !default;
-$btn-padding-horizontal: $padding-base-horizontal !default;
+$btn-padding-vertical: $padding-small-vertical !default;
+$btn-padding-horizontal: $padding-small-horizontal !default;
 
 $btn-xs-padding-vertical: $padding-xs-vertical !default;
 $btn-xs-padding-horizontal: $padding-xs-horizontal !default;
 
-$btn-sm-padding-vertical: $padding-small-vertical !default;
-$btn-sm-padding-horizontal: $padding-small-horizontal !default;
+$btn-sm-padding-vertical: floor($padding-small-vertical * 0.75) !default;
+$btn-sm-padding-horizontal: floor($padding-small-horizontal * 0.75) !default;
 
-$btn-lg-padding-vertical: $padding-large-vertical !default;
-$btn-lg-padding-horizontal: $padding-large-horizontal !default;
+$btn-lg-padding-vertical: $padding-base-vertical !default;
+$btn-lg-padding-horizontal: $padding-base-horizontal !default;
 
 ///== Forms
 //
