@@ -1,0 +1,20 @@
+//todo: comment
+@mixin flexLeftMiddleRight(){
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > * {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+
+        &:first-child {
+            justify-content: flex-start;
+        }
+
+        &:last-child {
+            justify-content: flex-end;
+        }
+    }
+}
