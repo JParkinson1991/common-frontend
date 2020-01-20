@@ -20,16 +20,22 @@
 @import 'functions/contains';
 @import 'functions/lists';
 @import 'functions/negative';
+@import 'functions/string';
 @import 'functions/types';
 
+
 // Mixins
+@import 'mixins/buttons';
 @import 'mixins/clearfix';
 @import 'mixins/count';
+@import 'mixins/flex';
 @import 'mixins/float';
 @import 'mixins/inline_block';
 @import 'mixins/media_queries';
+@import 'mixins/row_item';
 
-// Partials
-@import 'partials/forms';
-@import 'partials/html';
-@import 'partials/type';
+// Base
+@import 'base/buttons';
+@import 'base/forms';
+@import 'base/html';
+@import 'base/type';
