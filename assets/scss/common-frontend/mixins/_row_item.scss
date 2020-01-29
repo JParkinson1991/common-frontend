@@ -1,3 +1,30 @@
+////
+/// @file _row_item.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Applies width styling for a item within a row of items.
+///
+/// Given the items wanted to be displayed in a single row and the margin
+/// around them this mixin can calculate the required width for the items
+/// within the row. It is also capable of setting a specific bottom margin for
+/// items in the last row.
+///
+/// This mixin does not handle the actual creation of the row, this must be done
+/// externally via float, flex etc etc.
+///
+/// @param {int} $itemsPerRow
+///     The number of items to be displayed per row
+/// @param {unit} $itemMargin
+///     The margin to use between each item in the row
+/// @param {unit} $lastRowMarginBottom
+///     The margin to apply to the bottom of each item in the last row.
+/// @param {bool} $nthOfType
+///     Use nth-of-type selectors over nth-child?
+///     Most likely never required, can be used if row items not displaying as
+///     expected.
 @mixin rowItem($itemsPerRow, $itemMargin, $lastRowMarginBottom: 0, $nthOfType: false){
     $nthSelector: if($nthOfType, 'nth-of-type', 'nth-child');
     $nthLastSelector: if($nthOfType, 'nth-last-of-type', 'nth-last-child');
@@ -16,11 +43,24 @@
     }
 }
 
-@mixin rowItemDisable($itemsPerRow, $nthOfType: false){
-    @include rowItem($itemsPerRow, 0, 0, $nthOfType);
-    width: 100%;
-}
-
+/// Resets the row items to be display a new number of items per row
+///
+/// Useful if it is required to change the number of items per row per
+/// breakpoint for example.
+///
+/// @param {int} $previousItemsPerRow
+///     The previous number of configured row items
+///     Use the value that was originally passed to rowItem() $itemsPerRow
+/// @param {int} $newItemsPerRow
+///     The new number of items to display per row
+/// @param {unit} $itemMargin
+///     The margin to use between each item in the row
+/// @param {unit} $lastRowMarginBottom
+///     The margin to apply to the bottom of each item in the last row.
+/// @param {bool} $nthOfType
+///     Use nth-of-type selectors over nth-child?
+///     Most likely never required, can be used if row items not displaying as
+///     expected.
 @mixin rowItemReset($previousItemsPerRow, $newItemsPerRow, $itemMargin, $lastRowMarginBottom: 0, $nthOfType: false){
     $nthSelector: if($nthOfType, 'nth-of-type', 'nth-child');
     $nthLastSelector: if($nthOfType, 'nth-last-of-type', 'nth-last-child');
@@ -35,4 +75,20 @@
     }
 
     @include rowItem($newItemsPerRow, $itemMargin, $lastRowMarginBottom, $nthOfType);
+}
+
+
+/// Removes/Resets rowItem() applied styling.
+///
+/// This mixin simply abstracts away the complexities in resetting row item
+/// styles.
+///
+/// @param {int} $itemsPerRow
+///     The number of items to be displayed per row
+/// @param {bool} $nthOfType
+///     Use nth-of-type selectors over nth-child?
+///     This should match the value used to initialise the row items.
+@mixin rowItemDisable($itemsPerRow, $nthOfType: false){
+    @include rowItem($itemsPerRow, 0, 0, $nthOfType);
+    width: 100%;
 }

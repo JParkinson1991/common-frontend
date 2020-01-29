@@ -1,3 +1,20 @@
+////
+/// @file _buttons.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Creates a simple ghost button.
+///
+/// @param {color} $color
+///     The color of the ghost button. This color is used for the button border
+///     and the button text.
+/// @param {unit} $padding-vertical
+///     The vertical padding to apply to the button
+///     and the button text.
+/// @param {unit} $padding-horizontal
+///     The horizontal padding to apply to the button
 @mixin ghostButton($color, $padding-vertical: $btn-padding-vertical, $padding-horizontal: $btn-padding-horizontal){
     background-color: transparent;
     border: 1px solid $color;
@@ -10,10 +27,20 @@
     }
 }
 
-
-@mixin button($bg-color, $text-colour, $padding-vertical: $btn-padding-vertical, $padding-horizontal: $btn-padding-horizontal){
+/// Creates a simple button.
+///
+/// @param {color} $bg-color
+///     The background color to apply to the button
+/// @param {color} $text-color
+///     The color of the text within the button
+/// @param {unit} $padding-vertical
+///     The vertical padding to apply to the button
+///     and the button text.
+/// @param {unit} $padding-horizontal
+///     The horizontal padding to apply to the button
+@mixin button($bg-color, $text-color, $padding-vertical: $btn-padding-vertical, $padding-horizontal: $btn-padding-horizontal){
     background-color: $bg-color;
-    color: $text-colour;
+    color: $text-color;
     padding: $padding-vertical $padding-horizontal;
 
     &:hover {
