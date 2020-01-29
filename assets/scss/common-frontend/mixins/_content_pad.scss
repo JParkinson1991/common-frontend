@@ -1,0 +1,67 @@
+////
+/// @file _content_pad.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Pads an element via it's children
+///
+/// This mixin will apply vertical padding to the element via adding margins to
+/// the first and last children within it. This is useful, if empty containers
+/// should not have padding applied etc.
+///
+/// @param {unit} $padding
+///     The padding to apply
+/// @param {string} $where
+///      Where to apply the padding, valid values:
+///          all, left, right, top, bottom
+@mixin contentPad($padding, $where: 'all'){
+    @if(stringContainsOne($where, ('all', '*', 'left'))){
+        padding-left: $padding;
+    }
+
+    @if(stringContainsOne($where, ('all', '*', 'right'))){
+        padding-right: $padding;
+    }
+
+
+    @if(stringContainsOne($where, ('all', '*', 'top'))){
+        > :first-child {
+            margin-top: $padding;
+        }
+    }
+
+    @if(stringContainsOne($where, ('all', '*', 'bottom'))){
+        > :last-child {
+            margin-bottom: $padding;
+        }
+    }
+}
+
+/// Removes padding applied via contentPad()
+///
+/// @param {string} $where
+///      Where to apply the padding, valid values:
+///          all, left, right, top, bottom
+@mixin contentPadRemove($where: 'all'){
+    @if(stringContainsOne($where, ('all', '*', 'left'))){
+        padding-left: 0;
+    }
+
+    @if(stringContainsOne($where, ('all', '*', 'right'))){
+        padding-right: 0;
+    }
+
+    @if(stringContainsOne($where, ('all', '*', 'top'))){
+        > :first-child {
+            margin-top: 0;
+        }
+    }
+
+    @if(stringContainsOne($where, ('all', '*', 'bottom'))){
+        > :last-child {
+            margin-bottom: 0;
+        }
+    }
+}
