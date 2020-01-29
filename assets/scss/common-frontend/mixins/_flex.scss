@@ -1,4 +1,15 @@
-//todo: comment
+////
+/// @file _flex.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
+
+/// Creates a standard left - middle - right flex display.
+///
+/// The left column will have its children aligned to the left.
+/// The middle column will have its children centered within it.
+/// The right column will have its children aligned to the right.
 @mixin flexLeftMiddleRight(){
     display: flex;
     align-items: center;
