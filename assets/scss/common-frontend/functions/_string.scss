@@ -1,13 +1,45 @@
-// todo: comment
+////
+/// @file _string.scss
+///
+/// @group utility
+/// @author Josh Parkinson <joshparkinson1991@gmail.com>
+////
 
+/// Checks if a string contains the provided sub string
+///
+/// @param {string} $string
+///     The string to search within
+/// @param {string} $subString
+///     The sub string to search for
+///
+/// @return {bool}
+///     True if found, false if not.
 @function stringContains($string, $subString){
     @return stringContainsSensitive(to-lower_case($string), to_lower_case($subString));
 }
 
+/// Case sensitive check if a string contains the provided sub string
+///
+/// @param {string} $string
+///     The string to search within
+/// @param {string} $subString
+///     The sub string to search for
+///
+/// @return {bool}
+///     True if found, false if not.
 @function stringContainsSensitive($string, $subString){
     @return str-index($string, $subString);
 }
 
+/// Checks if a string contains all of the provided sub strings
+///
+/// @param {string} $string
+///     The string to search within
+/// @param {string[]} $subString
+///     A flat array of substrings to search for
+///
+/// @return {bool}
+///     True if all are found, false if not.
 @function stringContainsAll($string, $subStrings){
     @each $subString in $subString {
         @if not stringContains($string, $subString) {
@@ -18,6 +50,15 @@
     @return true;
 }
 
+/// Checks if a string contains at least one of the provided sub strings
+///
+/// @param {string} $string
+///     The string to search within
+/// @param {string[]} $subString
+///     A flat array of substrings to search for
+///
+/// @return {bool}
+///     True if atleast one sub string found, false if not.
 @function stringContainsOne($string, $subStrings){
     @each $subString in $subStrings {
         @if stringContains($string, $subString) {

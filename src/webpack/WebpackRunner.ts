@@ -434,7 +434,6 @@ export default class WebpackRunner {
                                     sassOptions: {
                                         sourceMap: devMode,
                                         outputStyle: (devMode) ? 'compressed' : 'nested',
-                                        // todo: note about glob importer working only for non aliased imports
                                         importer: globImporter()
                                     },
                                     sourceMap: devMode // source maps only enabled in dev mode
