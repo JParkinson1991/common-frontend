@@ -13,55 +13,80 @@
 ///
 /// @param {unit} $padding
 ///     The padding to apply
-/// @param {string} $where
-///      Where to apply the padding, valid values:
-///          all, left, right, top, bottom
-@mixin contentPad($padding, $where: 'all'){
-    @if(stringContainsOne($where, ('all', '*', 'left'))){
-        padding-left: $padding;
+/// @param {string[]} $firstChildIgnore
+///      An array of selectors, where if they are the first child of the parent
+///      this mixin is applied, they should not have the top padding applied
+///      to instead applying it to the next non ignored sibling
+@mixin contentPad($padding, $firstChildIgnore: ()){
+    // Split padding
+    $paddingValuesRaw: stringSplit(quote($padding), ' ');
+    @if(length($paddingValuesRaw) < 1 or length($paddingValuesRaw) > 4){
+        @error "Invalid padding declaration";
     }
 
-    @if(stringContainsOne($where, ('all', '*', 'right'))){
-        padding-right: $padding;
+    $paddingValues: ();
+    @each $value in $paddingValuesRaw {
+        $paddingValues: append($paddingValues, unquote($value));
     }
 
+    // Determine padding variables
+    // Default to a single value padding attributes, ie, all sides same size
+    // Handle other number of values passed as required
+    $paddingTop: nth($paddingValues, 1);
+    $paddingRight: nth($paddingValues, 1);
+    $paddingBottom: nth($paddingValues, 1);
+    $paddingLeft: nth($paddingValues, 1);
+    @if(length($paddingValuesRaw) == 2){
+        $paddingTop: nth($paddingValues, 1);
+        $paddingRight: nth($paddingValues, 2);
+        $paddingBottom: nth($paddingValues, 1);
+        $paddingLeft: nth($paddingValues, 2);
+    }
+    @else if(length($paddingValuesRaw) == 3){
+        $paddingTop: nth($paddingValues, 1);
+        $paddingRight: nth($paddingValues, 2);
+        $paddingBottom: nth($paddingValues, 3);
+        $paddingLeft: nth($paddingValues, 2);
+    }
+    @else if(length($paddingValuesRaw) == 4){
+        $paddingTop: nth($paddingValues, 1);
+        $paddingRight: nth($paddingValues, 2);
+        $paddingBottom: nth($paddingValues, 3);
+        $paddingLeft: nth($paddingValues, 4);
+    }
 
-    @if(stringContainsOne($where, ('all', '*', 'top'))){
+    // Simple padding
+    padding-left: $paddingLeft;
+    padding-right: $paddingRight;
+    > :first-child {
+        margin-top: $paddingTop;
+    }
+    > :last-child {
+        margin-bottom: $paddingBottom;
+    }
+
+    // If ignore first child with selectors
+    @if(length($firstChildIgnore) > 0){
+        // Format the ignored selectors into the & selector strings and the
+        // not selector strings, remove the trailing comma from the & selectors
+        // Remove trailing comma
+        $ignoreSelectorsNot: '';
+        $ignoreSelectorsAmp: '';
+        @each $selector in $firstChildIgnore {
+            $ignoreSelectorsAmp: $ignoreSelectorsAmp + '&' + $selector + ',';
+            $ignoreSelectorsNot: $ignoreSelectorsNot + ':not(' + $selector + ')';
+        }
+        $ignoreSelectorsAmp: str-slice($ignoreSelectorsAmp, 1, -2);
+
+        // Disable the top padding from ignored elements
         > :first-child {
-            margin-top: $padding;
-        }
-    }
+            #{str-slice($ignoreSelectorsAmp, 1, -2)}{
+                margin-top: 0;
 
-    @if(stringContainsOne($where, ('all', '*', 'bottom'))){
-        > :last-child {
-            margin-bottom: $padding;
-        }
-    }
-}
-
-/// Removes padding applied via contentPad()
-///
-/// @param {string} $where
-///      Where to apply the padding, valid values:
-///          all, left, right, top, bottom
-@mixin contentPadRemove($where: 'all'){
-    @if(stringContainsOne($where, ('all', '*', 'left'))){
-        padding-left: 0;
-    }
-
-    @if(stringContainsOne($where, ('all', '*', 'right'))){
-        padding-right: 0;
-    }
-
-    @if(stringContainsOne($where, ('all', '*', 'top'))){
-        > :first-child {
-            margin-top: 0;
-        }
-    }
-
-    @if(stringContainsOne($where, ('all', '*', 'bottom'))){
-        > :last-child {
-            margin-bottom: 0;
+                + *#{$ignoreSelectorsNot}{
+                    margin-top: $paddingTop;
+                }
+            }
         }
     }
 }
