@@ -68,3 +68,38 @@
 
     @return false;
 }
+
+/// Splits a string into an array using the provided separator
+///
+/// @param {string} $string
+///     The string to split
+/// @param {string} $separator
+///     The separator to use when splitting the string
+///
+/// @return {string[]}
+///     An array containing the segments of the separated string
+@function stringSplit($string, $separator){
+    $splitArray: ();
+
+    // Determine the initial separator index, begin processing loop
+    $separatorIndex: str-index($string, $separator);
+    @while ($separatorIndex != null) {
+        // Slice the string, first character, to character before separator
+        // Add it into the split array
+        $splitItem: str-slice($string, 1, $separatorIndex - 1);
+        $splitArray: append($splitArray, $splitItem);
+
+        // Slice out all characters after the index
+        $string: str-slice($string, $separatorIndex + 1);
+
+        // Find the next separator index
+        $separatorIndex: str-index($string, $separator);
+    }
+
+    // Final loop of processing will not find a separator, the remaining
+    // contents of the string variable will be the last section of the split
+    // add into the split items before returning
+    $splitArray: append($splitArray, $string);
+
+    @return $splitArray;
+}
