@@ -103,3 +103,24 @@
 
     @return $splitArray;
 }
+
+/// Replaces the searched string/characters with the provided replacements
+///
+/// @param {string} $string
+///     The string to do the replacement within
+/// @param {string} $search
+///     The substring to search by
+/// @param {string} $replace
+///     The replacement string
+///
+/// @return {string}
+///    The string with any replacements made
+@function stringReplace($string, $search, $replace: '') {
+    $index: str-index($string, $search);
+
+    @if $index {
+        @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    }
+
+    @return $string;
+}
