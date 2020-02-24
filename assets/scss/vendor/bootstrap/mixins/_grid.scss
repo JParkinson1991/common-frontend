@@ -5,6 +5,23 @@
 /// @author Josh Parkinson <joshparkinson1991@gmail.com>
 ////
 
+/// Generates a fluid bootstrap container element
+///
+@mixin bootstrapContainerFluid(){
+    @include container-fixed();
+
+    @media (min-width: $screen-sm-min) {
+        width: 100%;
+    }
+    @media (min-width: $screen-md-min) {
+        width: 100%;
+    }
+    @media (min-width: $screen-lg-min) {
+        width: 100%;
+    }
+}
+/// Generates a fixed width bootstrap container element
+///
 @mixin bootstrapContainerFixed(){
     @include container-fixed;
 
@@ -17,6 +34,16 @@
     @media (min-width: $screen-lg-min) {
         width: $container-lg;
     }
+}
+
+/// Breaks out of a fixed container parent
+///
+/// Strongly recommended to add overflow-x hidden to the body to handle vw
+/// incompatibility with scrolls bars.
+@mixin breakContainerFixed(){
+    width: 100vw;
+    position: relative;
+    left: calc(-1 * (100vw - 100%) / 2);
 }
 
 /// Generates a bootstrap row element
